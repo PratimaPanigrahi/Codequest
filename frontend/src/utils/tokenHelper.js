@@ -1,11 +1,8 @@
-// Save token to localStorage with optional expiry (in seconds)
-export const setToken = (token, expiresIn = 3600) => { // default 1 hour
+// Save token with expiry
+export const setToken = (token, expiresIn = 2592000) => {
   if (token) {
     const expiryTime = new Date().getTime() + expiresIn * 1000
-    const tokenData = {
-      token,
-      expiry: expiryTime,
-    }
+    const tokenData = { token, expiry: expiryTime }
     localStorage.setItem('token', JSON.stringify(tokenData))
   }
 }
@@ -17,24 +14,23 @@ export const getToken = () => {
 
   try {
     const { token, expiry } = JSON.parse(tokenString)
+
     if (new Date().getTime() > expiry) {
       removeToken() // token expired
+      // Auto-logout & redirect to login
+      window.location.href = '/login'
       return null
     }
+
     return token
-  } catch (error) {
-    console.error('Error parsing token:', error)
+  } catch {
     removeToken()
     return null
   }
 }
 
 // Remove token from localStorage
-export const removeToken = () => {
-  localStorage.removeItem('token')
-}
+export const removeToken = () => localStorage.removeItem('token')
 
 // Check if user is logged in (token exists and not expired)
-export const isLoggedIn = () => {
-  return !!getToken()
-}
+export const isLoggedIn = () => !!getToken()
