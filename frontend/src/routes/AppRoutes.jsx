@@ -5,8 +5,12 @@ import ProtectedRoute from '../middleware/ProtectedRoute.jsx'
 import RoleRoute from '../middleware/RoleRoute.jsx'
 import Loader from '../components/ui/Loader.jsx'
 
-// Pages (lazy-loaded)
-const Home = lazy(() => import('../pages/Home.jsx'))
+// ----- Lazy-loaded Pages ----- //
+// Public Pages
+const PublicHome = lazy(() => import('../pages/PublicHome.jsx'))
+
+// User Pages
+const UserHome = lazy(() => import('../pages/UserHome.jsx')) // default export required
 
 // Auth
 const Login = lazy(() => import('../pages/auth/Login.jsx'))
@@ -34,9 +38,16 @@ export default function AppRoutes() {
   return (
     <Suspense fallback={<Loader />}>
       <Routes>
-        <Route path="/" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        {/* Public Landing Page */}
+        <Route path="/" element={<PublicHome />} />
 
-        {/* Auth */}
+        {/* User Dashboard (Protected) */}
+        <Route path="/userhome" element={<ProtectedRoute><UserHome /></ProtectedRoute>} />
+
+        {/* <Route path="/userhome" element={<UserHome />} />  */}
+
+
+        {/* Auth Routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
@@ -52,11 +63,23 @@ export default function AppRoutes() {
         {/* Progress */}
         <Route path="/progress" element={<ProtectedRoute><ProgressDashboard /></ProtectedRoute>} />
 
-        {/* Admin */}
-        <Route path="/admin/dashboard" element={<RoleRoute role="admin"><AdminDashboard /></RoleRoute>} />
-        <Route path="/admin/lessons" element={<RoleRoute role="admin"><LessonManagement /></RoleRoute>} />
-        <Route path="/admin/quizzes" element={<RoleRoute role="admin"><QuizManagement /></RoleRoute>} />
-        <Route path="/admin/roadmaps" element={<RoleRoute role="admin"><RoadmapManagement /></RoleRoute>} />
+        {/* Admin Routes */}
+        <Route
+          path="/admin/dashboard"
+          element={<RoleRoute role="admin"><AdminDashboard /></RoleRoute>}
+        />
+        <Route
+          path="/admin/lessons"
+          element={<RoleRoute role="admin"><LessonManagement /></RoleRoute>}
+        />
+        <Route
+          path="/admin/quizzes"
+          element={<RoleRoute role="admin"><QuizManagement /></RoleRoute>}
+        />
+        <Route
+          path="/admin/roadmaps"
+          element={<RoleRoute role="admin"><RoadmapManagement /></RoleRoute>}
+        />
       </Routes>
     </Suspense>
   )

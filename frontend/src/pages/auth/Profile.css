@@ -1,0 +1,63 @@
+.profile-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+}
+
+.profile-initial {
+  width: 45px;
+  height: 45px;
+  background-color: #007bff;
+  color: #fff;
+  border-radius: 50%;
+  font-weight: bold;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  width: 250px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+  padding: 12px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.profile-info p,
+.profile-courses p {
+  margin: 4px 0;
+}
+
+.profile-courses ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.logout-btn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 8px;
+  background-color: #dc3545;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
+}
