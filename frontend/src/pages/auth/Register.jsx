@@ -18,6 +18,15 @@ const Register = () => {
     if (isAuthenticated) navigate("/userhome");
   }, [isAuthenticated, navigate]);
 
+// Redirect if logged in
+useEffect(() => {
+  if (isAuthenticated) {
+    // replace: true ensures /login is replaced in history
+    navigate("/userhome", { replace: true });
+  }
+}, [isAuthenticated, navigate]);
+
+
   // Show backend error
   useEffect(() => {
     if (error) setCustomError(error.message);

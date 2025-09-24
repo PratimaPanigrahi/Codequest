@@ -1,64 +1,31 @@
-import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+// src/pages/auth/Profile.jsx
+import React from "react";
+import { useSelector } from "react-redux";
+import Layout from "../../components/layout/Layout";
 import "./Profile.css";
 
-const Profile = ({ user }) => {
-  const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
-  const dropdownRef = useRef();
+const Profile = () => {
+  const { user } = useSelector((state) => state.auth);
 
-  const toggleDropdown = () => setOpen(!open);
-
-  const handleLogout = () => {
-    localStorage.removeItem("userToken");
-    navigate("/login");
-  };
-
-  // Close dropdown if clicked outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  if (!user) return null;
-
-  const initial = user.name ? user.name.charAt(0).toUpperCase() : "U";
+  if (!user) return <Layout><p>Loading profile...</p></Layout>;
 
   return (
-    <div className="profile-container" ref={dropdownRef}>
-      <div className="profile-initial" onClick={toggleDropdown}>
-        {initial}
-      </div>
-      {open && (
-        <div className="profile-dropdown">
-          <div className="profile-info">
-            <p><strong>Name:</strong> {user.name}</p>
+    <Layout>
+      <div className="profile-page">
+        <h1>My Profile</h1>
+        <div className="profile-info-card">
+          <div className="profile-avatar">
+            {user.name.charAt(0).toUpperCase()}
+          </div>
+          <div className="profile-details">
+            <h2>{user.name}</h2>
             <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>User ID:</strong> {user._id || user.id}</p>
+            <p><strong>Contact Number:</strong> {user.contact || "Not provided"}</p>
+            <p><strong>Login Date:</strong> {user.loginDate || "Not available"}</p>
           </div>
-          <div className="profile-courses">
-            <p><strong>Courses Applied:</strong></p>
-            {user.courses && user.courses.length > 0 ? (
-              <ul>
-                {user.courses.map((course, index) => (
-                  <li key={index}>{course}</li>
-                ))}
-              </ul>
-            ) : (
-              <p>No courses applied</p>
-            )}
-          </div>
-          <button className="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
         </div>
-      )}
-    </div>
+      </div>
+    </Layout>
   );
 };
 

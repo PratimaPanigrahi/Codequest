@@ -1,0 +1,38 @@
+/* Wrapper takes full height */
+.layout-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Main area fills remaining space */
+.layout-main {
+  display: flex;
+  flex: 1;
+  overflow: hidden; /* prevent unwanted scroll */
+}
+
+/* Content area scrollable if content overflows */
+.layout-content {
+  flex: 1;
+  overflow-y: auto;
+  /* margin: 0; */
+  /* padding: 16px; optional */
+}
+
+/* Optional dashboard sidebar */
+.dashboard-sidebar {
+  width: 300px;
+  height: 100%;
+  overflow-y: auto;
+  background-color: #f1f1f1;
+}
+
+/* Footer sticks at bottom */
+.layout-footer {
+  flex-shrink: 0;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  text-align: center;
+  color: #333;
+}

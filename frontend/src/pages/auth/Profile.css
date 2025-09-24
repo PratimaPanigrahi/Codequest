@@ -1,63 +1,57 @@
-.profile-container {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  z-index: 100;
+/* src/pages/auth/Profile.css */
+
+.profile-page {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #f9fafb; /* light background */
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: 'Arial', sans-serif;
 }
 
-.profile-initial {
-  width: 45px;
-  height: 45px;
-  background-color: #007bff;
-  color: #fff;
+.profile-page h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: #1f2937; /* dark text */
+}
+
+.profile-info-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: #ffffff; /* card bg */
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
   border-radius: 50%;
-  font-weight: bold;
-  font-size: 18px;
+  background-color: #2563eb; /* blue circle */
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: uppercase;
 }
 
-.profile-dropdown {
-  position: absolute;
-  top: 55px;
-  right: 0;
-  width: 250px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-  padding: 12px;
-  animation: fadeIn 0.2s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.profile-info p,
-.profile-courses p {
-  margin: 4px 0;
-}
-
-.profile-courses ul {
+.profile-details h2 {
   margin: 0;
-  padding-left: 18px;
+  font-size: 1.5rem;
+  color: #111827;
 }
 
-.logout-btn {
-  margin-top: 8px;
-  width: 100%;
-  padding: 8px;
-  background-color: #dc3545;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.profile-details p {
+  margin: 0.25rem 0;
+  color: #4b5563; /* gray text */
+  font-size: 1rem;
 }
 
-.logout-btn:hover {
-  background-color: #c82333;
+.profile-details p strong {
+  color: #1f2937;
 }

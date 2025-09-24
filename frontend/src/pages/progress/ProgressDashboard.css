@@ -1,0 +1,231 @@
+/* 🟢 Dashboard Wrapper - FIXED */
+.dashboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%; 
+  font-family: "Poppins", sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 12px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* Content container that fits everything without scrolling */
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 10px;
+}
+
+/* Make sections flexible to fit within container */
+.streak-section,
+.lesson-progress,
+.stats-grid,
+.charts-grid,
+.achievements,
+.struggling-topics {
+  flex-shrink: 0;
+  min-height: auto;
+}
+
+/* 🔥 Streak Section - Slightly bolder text */
+.streak-section {
+  text-align: center;
+  background: #fff;
+  padding: 8px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.streak-icon {
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  margin: 0 auto 4px;
+}
+
+.streak-title {
+  font-size: 15px; /* increased */
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.streak-subtext {
+  font-size: 12px; /* increased */
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.streak-days {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 4px;
+}
+
+.day-circle {
+  width: 24px;
+  height: 24px;
+  font-size: 11px; /* slightly larger */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f0f0f0;
+}
+
+.day-circle.active {
+  background: #4caf50;
+  color: white;
+}
+
+/* 📊 Lesson Progress - Slightly bolder */
+.lesson-progress {
+  background: #fff;
+  padding: 8px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.lesson-header h3 {
+  font-size: 15px; 
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.lesson-header p {
+  font-size: 12px;
+  font-weight: 500;
+  margin: 0;
+}
+
+.progress-track {
+  margin-top: 6px;
+}
+
+.progress-bar {
+  background: #eee;
+  height: 6px;
+  border-radius: 6px;
+  position: relative;
+}
+
+.progress-fill {
+  background-color: #4caf50;
+  height: 100%;
+  border-radius: 6px;
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.stat-card {
+  background: #fff;
+  padding: 8px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  max-height: 120px; /* keep same height */
+}
+
+.stat-icon {
+  font-size: 16px; /* slightly bigger */
+  margin-bottom: 2px;
+}
+
+.stat-card h3 {
+  font-size: 14px; /* increased */
+  font-weight: 600;
+  margin: 2px 0;
+}
+
+.stat-card p {
+  font-size: 12px; /* increased */
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Charts */
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.chart-card {
+  background: #fff;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  height: 120px;
+}
+
+.chart-card h4 {
+  margin-bottom: 2px;
+  font-size: 13px; /* increased */
+  font-weight: 600;
+}
+
+/* Achievements & Struggling Topics */
+.achievements,
+.struggling-topics {
+  background: #fff;
+  padding: 8px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  flex-shrink: 0;
+  max-height: 150px; /* maintain height */
+}
+
+.achievements h4,
+.struggling-topics h4 {
+  font-size: 13px; /* slightly larger */
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.achievement-cards {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+
+.achievement-card {
+  padding: 3px 6px;
+  border-radius: 8px;
+  font-size: 11px; /* slightly bigger */
+  font-weight: 500;
+  background: #f0f0f0;
+}
+
+.struggling-topics ul {
+  margin: 2px 0 0 0;
+  padding-left: 12px;
+  font-size: 11px; /* slightly bigger */
+  font-weight: 500;
+}
+
+.text-muted {
+  font-size: 11px;
+  color: #999;
+  margin: 0;
+}
+
+/* Optional: error/loading messages */
+.error {
+  color: red;
+  text-align: center;
+  font-size: 13px; /* slightly bigger */
+  margin: 0;
+}
+
+/* Gold, green, blue, red icons */
+.gold { color: #FFD700; }
+.green { color: #28a745; }
+.blue { color: #007bff; }
+.red { color: #dc3545; }

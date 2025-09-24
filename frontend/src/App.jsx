@@ -1,17 +1,9 @@
+// src/App.jsx
 import React from "react";
 import AppRoutes from "./routes/AppRoutes";
 
 function App() {
-  return (
-    <div className="app-wrapper d-flex flex-column min-vh-100">
-      <AppRoutes />
-      <footer className="footer mt-auto py-3 bg-light text-center">
-        <p className="mb-0">
-          &copy; {new Date().getFullYear()} CodeQuest. All rights reserved.
-        </p>
-      </footer>
-    </div>
-  );
+  return <AppRoutes />;
 }
 
 export default App;

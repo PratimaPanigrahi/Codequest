@@ -22,6 +22,15 @@ const Login = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  // Redirect if logged in
+useEffect(() => {
+  if (isAuthenticated) {
+    // replace: true ensures /login is replaced in history
+    navigate("/userhome", { replace: true });
+  }
+}, [isAuthenticated, navigate]);
+
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };

@@ -1,57 +1,88 @@
-// src/store/authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api/axios.js";
 import { setToken, removeToken, getToken } from "../utils/tokenHelper.js";
 import { handleError } from "../utils/handleError.js";
 
-// REGISTER
+// --- REGISTER USER ---
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await api.post("/auth/register", credentials);
       const { token, name, email, role } = response.data;
+
       setToken(token);
-      return { token, user: { name, email, role } };
+
+      const user = { name, email, role, selectedCourses: [] };
+      localStorage.setItem("user", JSON.stringify(user));
+
+      return { token, user };
     } catch (error) {
-      return rejectWithValue(handleError(error)); // Pass the full object
+      return rejectWithValue(handleError(error).message);
     }
   }
 );
 
-// LOGIN
+// --- LOGIN USER ---
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await api.post("/auth/login", credentials);
-      const { token, name, email, role } = response.data;
+      const { token, name, email, role, selectedCourses } = response.data;
+
       setToken(token);
-      return { token, user: { name, email, role } };
+
+      const user = { name, email, role, selectedCourses: selectedCourses || [] };
+      localStorage.setItem("user", JSON.stringify(user));
+
+      return { token, user };
     } catch (error) {
-      return rejectWithValue(handleError(error));
+      return rejectWithValue(handleError(error).message);
     }
   }
 );
 
-// LOGOUT
+// --- LOGOUT USER ---
 export const logoutUser = createAsyncThunk("auth/logoutUser", async () => {
   removeToken();
+  localStorage.removeItem("user");
   return null;
 });
 
+// --- INITIAL STATE ---
 const initialState = {
-  user: null,
+  user: JSON.parse(localStorage.getItem("user")) || null,
   token: getToken(),
   isAuthenticated: !!getToken(),
   loading: false,
   error: null,
 };
 
+// --- SLICE ---
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    // Add a course to user's enrolled courses
+    updateUserCourse: (state, action) => {
+      if (!state.user) return;
+
+      const { course, date } = action.payload;
+
+      // Initialize array if it doesn't exist
+      if (!state.user.selectedCourses) state.user.selectedCourses = [];
+
+      // Prevent duplicate enrollment
+      const exists = state.user.selectedCourses.find((c) => c.course === course);
+      if (!exists) {
+        state.user.selectedCourses.push({ course, date });
+      }
+
+      // Update localStorage
+      localStorage.setItem("user", JSON.stringify(state.user));
+    },
+  },
   extraReducers: (builder) => {
     // REGISTER
     builder.addCase(registerUser.pending, (state) => {
@@ -66,8 +97,9 @@ const authSlice = createSlice({
     });
     builder.addCase(registerUser.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.payload; // now an object {message, type}
+      state.error = action.payload;
       state.isAuthenticated = false;
+      state.user = null;
     });
 
     // LOGIN
@@ -85,6 +117,7 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
       state.isAuthenticated = false;
+      state.user = null;
     });
 
     // LOGOUT
@@ -97,4 +130,5 @@ const authSlice = createSlice({
   },
 });
 
+export const { updateUserCourse } = authSlice.actions;
 export default authSlice.reducer;
