@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Standard Library</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #306998;
+            --secondary: #FFD43B;
+            --accent: #4B8BBE;
+            --light: #f5f5f5;
+            --dark: #333;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: var(--dark);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .slide-container {
+            width: 90vw;
+            height: 85vh;
+            max-width: 1100px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: white;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.5s ease forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .slide-header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+            padding: 0 10px;
+            position: relative;
+            height: auto;
+        }
+        
+        .slide-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .slide-subtitle {
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 400;
+        }
+        
+        .slide-content {
+            width: 100%;
+            height: calc(100% - 140px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 0 10px;
+            overflow: hidden;
+            flex: 1;
+        }
+        
+        .content-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            overflow: hidden;
+            height: 100%;
+            flex: 1;
+        }
+        
+        .content-row {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            align-items: flex-start;
+            justify-content: center;
+            min-height: 0;
+            height: 100%;
+            flex: 1;
+        }
+        
+        .text-content {
+            flex: 1;
+            max-width: 500px;
+            min-height: 0;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .visual-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 400px;
+            min-height: 0;
+            height: 100%;
+        }
+        
+        .icon-large {
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+        
+        .section {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            width: 100%;
+            min-height: 0;
+            overflow: hidden;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-content {
+            line-height: 1.5;
+            font-size: 1rem;
+            min-height: 0;
+            overflow: hidden;
+            flex: 1;
+        }
+        
+        .section-content ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        
+        .section-content li {
+            margin-bottom: 8px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .feature-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--accent);
+            transition: transform 0.3s;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .feature-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .feature-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+        
+        .applications-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .application-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .application-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 5px 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            width: 100%;
+            max-width: 400px;
+            overflow: auto;
+            max-height: 100%;
+        }
+        
+        .code-keyword {
+            color: #f92672;
+        }
+        
+        .code-function {
+            color: #66d9ef;
+        }
+        
+        .code-string {
+            color: #a6e22e;
+        }
+        
+        .code-comment {
+            color: #75715e;
+        }
+        
+        .nav-buttons {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding-left: 20px;
+            padding-right: 60px;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .slide-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--primary);
+            font-weight: bold;
+            background: rgba(255,255,255,0.8);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+        
+        .python-logo {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        
+        .history-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            position: relative;
+            width: 100%;
+        }
+        
+        .history-timeline::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+        }
+        
+        .timeline-item {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+        
+        .timeline-year {
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .reflection-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 15px;
+            width: 100%;
+            max-height: 200px;
+            overflow: hidden;
+        }
+        
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            gap: 15px;
+            width: 100%;
+            padding: 10px 0;
+            overflow: hidden;
+        }
+        
+        .quiz-icon {
+            font-size: 4rem;
+            color: var(--primary);
+        }
+        
+        .quiz-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .quiz-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .quiz-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-top: 10px;
+        }
+        
+        .quiz-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .fun-fact {
+            background: linear-gradient(135deg, var(--secondary) 0%, #FFE873 100%);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+            border-left: 4px solid var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .python-mascot {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary);
+        }
+        
+        .interactive-element {
+            background: var(--light);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .interactive-element:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .quote-box {
+            background: linear-gradient(135deg, var(--accent) 0%, #6BA3D6 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+            position: relative;
+            font-size: 0.9rem;
+        }
+        
+        .quote-box::before {
+            content: '"';
+            font-size: 3rem;
+            position: absolute;
+            top: -5px;
+            left: 8px;
+            opacity: 0.3;
+        }
+        
+        .slide-timer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 0 0 0 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+        }
+        
+        .data-type-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .data-type-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            border-top: 4px solid var(--primary);
+            transition: transform 0.3s;
+        }
+        
+        .data-type-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .data-type-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .data-type-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+        
+        /* Module grid for standard library overview */
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .module-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            border-top: 4px solid var(--primary);
+            transition: transform 0.3s;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .module-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .module-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .module-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+        
+        /* Function list styling */
+        .function-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .function-item {
+            background: white;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            text-align: left;
+            border-left: 3px solid var(--accent);
+        }
+        
+        /* Compact content for slides */
+        .compact-content {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .compact-list {
+            padding-left: 15px;
+            margin: 5px 0;
+        }
+        
+        .compact-list li {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        /* Centered content for specific slides */
+        .centered-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            width: 100%;
+            gap: 15px;
+        }
+        
+        /* Timer warning style */
+        .timer-warning {
+            color: var(--warning);
+            font-weight: bold;
+        }
+        
+        .timer-complete {
+            color: var(--success);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>       
+
+        <!-- Slide 1: Introduction to Python Standard Library -->
+        <div class="slide active" id="slide1">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay">Timer: <span class="timer-warning">01:00</span></div>
+                <div class="python-mascot">
+                    <i class="fas fa-book"></i>
+                </div>
+                <h1 class="slide-title">Python Standard Library</h1>
+                <p class="slide-subtitle">Powerful tools built into Python</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <h2 class="section-title"><i class="fas fa-info-circle"></i> What is the Standard Library?</h2>
+                                <div class="section-content compact-content">
+                                    <p>The Python Standard Library is a collection of modules that come with every Python installation. These modules provide a wide range of functionality.</p>
+                                    <p>Key benefits:</p>
+                                    <ul class="compact-list">
+                                        <li>No need for external installations</li>
+                                        <li>Well-tested and reliable code</li>
+                                        <li>Comprehensive documentation</li>
+                                        <li>Cross-platform compatibility</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Did you know?</strong> Python's "batteries included" philosophy means it comes with many useful modules right out of the box.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Importing modules</span><br>
+                                <span class="code-keyword">import</span> math<br>
+                                <span class="code-keyword">import</span> random<br>
+                                <span class="code-keyword">import</span> datetime<br><br>
+                                
+                                <span class="code-comment"># Using module functions</span><br>
+                                root = math.sqrt(25)<br>
+                                num = random.randint(1, 10)<br>
+                                now = datetime.datetime.now()<br><br>
+                                
+                                print(<span class="code-string">"Results:"</span>, root, num, now)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn1" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 1 of 10</div>
+        </div>
+
+        <!-- Slide 2: The Math Module -->
+        <div class="slide" id="slide2">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay2">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">The Math Module</h1>
+                <p class="slide-subtitle">Mathematical functions and constants</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <h2 class="section-title"><i class="fas fa-calculator"></i> Mathematical Operations</h2>
+                                <div class="section-content compact-content">
+                                    <p>The math module provides access to mathematical functions and constants.</p>
+                                    <p>Common uses:</p>
+                                    <ul class="compact-list">
+                                        <li>Trigonometric functions (sin, cos, tan)</li>
+                                        <li>Logarithmic and exponential functions</li>
+                                        <li>Mathematical constants (π, e)</li>
+                                        <li>Rounding and absolute value functions</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Math Fact:</strong> The math module uses C library functions, making it very efficient.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Import the math module</span><br>
+                                <span class="code-keyword">import</span> math<br><br>
+                                
+                                <span class="code-comment"># Constants and functions</span><br>
+                                pi = math.pi<br>
+                                root = math.sqrt(64)<br>
+                                power = math.pow(2, 3)<br>
+                                factorial = math.factorial(5)<br><br>
+                                
+                                <span class="code-comment"># Trigonometric functions</span><br>
+                                sine = math.sin(math.pi/2)<br><br>
+                                
+                                print(<span class="code-string">"π ="</span>, pi)<br>
+                                print(<span class="code-string">"√64 ="</span>, root)<br>
+                                print(<span class="code-string">"5! ="</span>, factorial)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn2"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn2" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 2 of 10</div>
+        </div>
+
+        <!-- Slide 3: Math Module Functions -->
+        <div class="slide" id="slide3">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay3">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Math Module Functions</h1>
+                <p class="slide-subtitle">Key functions and their uses</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <h2 class="section-title"><i class="fas fa-list"></i> Useful Math Functions</h2>
+                                <div class="section-content compact-content">
+                                    <p>The math module contains over 50 functions. Here are some of the most useful:</p>
+                                    
+                                    <div class="function-list">
+                                        <div class="function-item">math.sqrt(x) - Square root</div>
+                                        <div class="function-item">math.pow(x, y) - x raised to power y</div>
+                                        <div class="function-item">math.factorial(x) - Factorial of x</div>
+                                        <div class="function-item">math.log(x, base) - Logarithm</div>
+                                        <div class="function-item">math.sin(x) - Sine function</div>
+                                        <div class="function-item">math.cos(x) - Cosine function</div>
+                                        <div class="function-item">math.ceil(x) - Round up</div>
+                                        <div class="function-item">math.floor(x) - Round down</div>
+                                    </div>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Tip:</strong> Use math.isclose() to compare floating-point numbers safely.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Practical math examples</span><br>
+                                <span class="code-keyword">import</span> math<br><br>
+                                
+                                <span class="code-comment"># Calculate circle area</span><br>
+                                radius = 5<br>
+                                area = math.pi * math.pow(radius, 2)<br>
+                                print(<span class="code-string">"Circle area:"</span>, area)<br><br>
+                                
+                                <span class="code-comment"># Calculate hypotenuse</span><br>
+                                a, b = 3, 4<br>
+                                c = math.sqrt(a**2 + b**2)<br>
+                                print(<span class="code-string">"Hypotenuse:"</span>, c)<br><br>
+                                
+                                <span class="code-comment"># Round numbers</span><br>
+                                num = 3.7<br>
+                                print(<span class="code-string">"Ceil:"</span>, math.ceil(num))<br>
+                                print(<span class="code-string">"Floor:"</span>, math.floor(num))
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn3"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn3" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 3 of 10</div>
+        </div>
+
+        <!-- Slide 4: The Random Module -->
+        <div class="slide" id="slide4">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay4">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">The Random Module</h1>
+                <p class="slide-subtitle">Generate random numbers for unpredictability</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <h2 class="section-title"><i class="fas fa-dice"></i> Random Number Generation</h2>
+                                <div class="section-content compact-content">
+                                    <p>The random module provides functions for generating random numbers.</p>
+                                    <p>Key features:</p>
+                                    <ul class="compact-list">
+                                        <li>Generate random integers and floats</li>
+                                        <li>Randomly select elements from sequences</li>
+                                        <li>Shuffle sequences in place</li>
+                                        <li>Generate random samples</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Random Fact:</strong> Python's random module uses a pseudo-random number generator.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Import the random module</span><br>
+                                <span class="code-keyword">import</span> random<br><br>
+                                
+                                <span class="code-comment"># Generate random numbers</span><br>
+                                random_int = random.randint(1, 100)<br>
+                                random_float = random.random()<br>
+                                random_range = random.uniform(1.5, 5.5)<br><br>
+                                
+                                <span class="code-comment"># Working with sequences</span><br>
+                                colors = [<span class="code-string">"red"</span>, <span class="code-string">"blue"</span>, <span class="code-string">"green"</span>]<br>
+                                random_color = random.choice(colors)<br>
+                                random.shuffle(colors)<br><br>
+                                
+                                print(<span class="code-string">"Random integer:"</span>, random_int)<br>
+                                print(<span class="code-string">"Random color:"</span>, random_color)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn4"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn4" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 4 of 10</div>
+        </div>
+
+        <!-- Slide 5: Random Module Applications -->
+        <div class="slide" id="slide5">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay5">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Random Module Applications</h1>
+                <p class="slide-subtitle">Practical uses of randomness</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <h2 class="section-title"><i class="fas fa-lightbulb"></i> Real-World Applications</h2>
+                                <div class="section-content compact-content">
+                                    <p>The random module is useful in many scenarios:</p>
+                                    
+                                    <div class="applications-grid">
+                                        <div class="application-item">
+                                            <div class="feature-icon"><i class="fas fa-gamepad"></i></div>
+                                            <div class="feature-title">Games</div>
+                                            <p>Dice rolls, card shuffling, random events</p>
+                                        </div>
+                                        <div class="application-item">
+                                            <div class="feature-icon"><i class="fas fa-flask"></i></div>
+                                            <div class="feature-title">Simulations</div>
+                                            <p>Monte Carlo methods, statistical modeling</p>
+                                        </div>
+                                        <div class="application-item">
+                                            <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                                            <div class="feature-title">Security</div>
+                                            <p>Password generation, cryptographic nonces</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Security Note:</strong> For cryptographic purposes, use the secrets module instead of random.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Example: Password generator</span><br>
+                                <span class="code-keyword">import</span> random<br>
+                                <span class="code-keyword">import</span> string<br><br>
+                                
+                                <span class="code-keyword">def</span> <span class="code-function">generate_password</span>(length=8):<br>
+                                &nbsp;&nbsp;chars = string.ascii_letters + string.digits<br>
+                                &nbsp;&nbsp;password = <span class="code-string">''</span>.join(random.choice(chars) <span class="code-keyword">for</span> _ <span class="code-keyword">in</span> range(length))<br>
+                                &nbsp;&nbsp;<span class="code-keyword">return</span> password<br><br>
+                                
+                                <span class="code-comment"># Example: Lottery number picker</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">lottery_numbers</span>(count=6, max_num=49):<br>
+                                &nbsp;&nbsp;numbers = list(range(1, max_num+1))<br>
+                                &nbsp;&nbsp;<span class="code-keyword">return</span> random.sample(numbers, count)<br><br>
+                                
+                                print(<span class="code-string">"Password:"</span>, generate_password(10))<br>
+                                print(<span class="code-string">"Lottery:"</span>, lottery_numbers())
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn5"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn5" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 5 of 10</div>
+        </div>
+
+        <!-- Slide 6: The Datetime Module -->
+        <div class="slide" id="slide6">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay6">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">The Datetime Module</h1>
+                <p class="slide-subtitle">Working with dates and times</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <h2 class="section-title"><i class="fas fa-clock"></i> Date and Time Manipulation</h2>
+                                <div class="section-content compact-content">
+                                    <p>The datetime module provides classes for manipulating dates and times.</p>
+                                    <p>Key classes:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>datetime</strong> - combines date and time</li>
+                                        <li><strong>date</strong> - represents a date</li>
+                                        <li><strong>time</strong> - represents a time</li>
+                                        <li><strong>timedelta</strong> - represents a duration</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Time Fact:</strong> Python's datetime can handle dates from year 1 to 9999.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Import the datetime module</span><br>
+                                <span class="code-keyword">import</span> datetime<br><br>
+                                
+                                <span class="code-comment"># Get current date and time</span><br>
+                                now = datetime.datetime.now()<br>
+                                today = datetime.date.today()<br><br>
+                                
+                                <span class="code-comment"># Create specific dates</span><br>
+                                birthday = datetime.date(1990, 5, 15)<br>
+                                meeting = datetime.datetime(2023, 12, 25, 18, 0)<br><br>
+                                
+                                <span class="code-comment"># Calculate differences</span><br>
+                                age = today - birthday<br>
+                                future = now + datetime.timedelta(days=7)<br><br>
+                                
+                                print(<span class="code-string">"Now:"</span>, now)<br>
+                                print(<span class="code-string">"Today:"</span>, today)<br>
+                                print(<span class="code-string">"Next week:"</span>, future)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn6"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn6" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 6 of 10</div>
+        </div>
+
+        <!-- Slide 7: Datetime Formatting -->
+        <div class="slide" id="slide7">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay7">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Datetime Formatting</h1>
+                <p class="slide-subtitle">Displaying dates in different formats</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <h2 class="section-title"><i class="fas fa-calendar-alt"></i> Formatting Dates</h2>
+                                <div class="section-content compact-content">
+                                    <p>The strftime() method allows you to format datetime objects as strings.</p>
+                                    <p>Common format codes:</p>
+                                    <ul class="compact-list">
+                                        <li>%Y - Year with century (2023)</li>
+                                        <li>%m - Month as number (01-12)</li>
+                                        <li>%d - Day of month (01-31)</li>
+                                        <li>%H - Hour (00-23)</li>
+                                        <li>%M - Minute (00-59)</li>
+                                        <li>%A - Full weekday name</li>
+                                        <li>%B - Full month name</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Tip:</strong> Use strptime() to convert strings to datetime objects.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Date formatting examples</span><br>
+                                <span class="code-keyword">import</span> datetime<br><br>
+                                
+                                now = datetime.datetime.now()<br><br>
+                                
+                                <span class="code-comment"># Different date formats</span><br>
+                                format1 = now.strftime(<span class="code-string">"%Y-%m-%d"</span>)<br>
+                                format2 = now.strftime(<span class="code-string">"%B %d, %Y"</span>)<br>
+                                format3 = now.strftime(<span class="code-string">"%A, %B %d at %I:%M %p"</span>)<br><br>
+                                
+                                <span class="code-comment"># Parsing dates from strings</span><br>
+                                date_str = <span class="code-string">"2023-12-25"</span><br>
+                                parsed_date = datetime.datetime.strptime(date_str, <span class="code-string">"%Y-%m-%d"</span>)<br><br>
+                                
+                                print(<span class="code-string">"Format 1:"</span>, format1)<br>
+                                print(<span class="code-string">"Format 2:"</span>, format2)<br>
+                                print(<span class="code-string">"Format 3:"</span>, format3)<br>
+                                print(<span class="code-string">"Parsed:"</span>, parsed_date)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn7"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn7" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 7 of 10</div>
+        </div>
+
+        <!-- Slide 8: Combining Modules -->
+        <div class="slide" id="slide8">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay8">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Combining Modules</h1>
+                <p class="slide-subtitle">Using multiple modules together</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <h2 class="section-title"><i class="fas fa-puzzle-piece"></i> Module Integration</h2>
+                                <div class="section-content compact-content">
+                                    <p>These standard library modules can be combined to create powerful applications.</p>
+                                    <p>Example scenarios:</p>
+                                    <ul class="compact-list">
+                                        <li>Game with random events and timing</li>
+                                        <li>Data analysis with mathematical functions</li>
+                                        <li>Scheduling system with random assignments</li>
+                                        <li>Simulation with mathematical models</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Integration Tip:</strong> Python's modules are designed to work well together.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Example: Event scheduler</span><br>
+                                <span class="code-keyword">import</span> datetime<br>
+                                <span class="code-keyword">import</span> random<br><br>
+                                
+                                events = [<span class="code-string">"Meeting"</span>, <span class="code-string">"Lunch"</span>, <span class="code-string">"Training"</span>]<br>
+                                today = datetime.date.today()<br>
+                                schedule = []<br><br>
+                                
+                                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(5):<br>
+                                &nbsp;&nbsp;day = today + datetime.timedelta(days=i)<br>
+                                &nbsp;&nbsp;event = random.choice(events)<br>
+                                &nbsp;&nbsp;time = datetime.time(random.randint(9, 17), 0)<br>
+                                &nbsp;&nbsp;schedule.append((day, time, event))<br><br>
+                                
+                                <span class="code-keyword">for</span> day, time, event <span class="code-keyword">in</span> schedule:<br>
+                                &nbsp;&nbsp;print(f<span class="code-string">"{day.strftime('%A')} at {time}: {event}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn8"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn8" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 8 of 10</div>
+        </div>
+
+        <!-- Slide 9: Other Useful Modules -->
+        <div class="slide" id="slide9">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay9">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Other Useful Modules</h1>
+                <p class="slide-subtitle">Exploring more of the Standard Library</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="centered-content">
+                        <div class="section">
+                            <h2 class="section-title"><i class="fas fa-search"></i> Beyond Math, Random, and Datetime</h2>
+                            <div class="section-content compact-content">
+                                <p>The Python Standard Library contains many other useful modules:</p>
+                                
+                                <div class="module-grid">
+                                    <div class="module-item">
+                                        <div class="module-icon"><i class="fas fa-file"></i></div>
+                                        <div class="module-title">OS Module</div>
+                                        <p>Interact with the operating system</p>
+                                    </div>
+                                    <div class="module-item">
+                                        <div class="module-icon"><i class="fas fa-folder"></i></div>
+                                        <div class="module-title">Pathlib</div>
+                                        <p>Object-oriented file system paths</p>
+                                    </div>
+                                    <div class="module-item">
+                                        <div class="module-icon"><i class="fas fa-network-wired"></i></div>
+                                        <div class="module-title">JSON</div>
+                                        <p>Work with JSON data</p>
+                                    </div>
+                                    <div class="module-item">
+                                        <div class="module-icon"><i class="fas fa-database"></i></div>
+                                        <div class="module-title">SQLite3</div>
+                                        <p>Lightweight database interface</p>
+                                    </div>
+                                    <div class="module-item">
+                                        <div class="module-icon"><i class="fas fa-envelope"></i></div>
+                                        <div class="module-title">Email</div>
+                                        <p>Create and send emails</p>
+                                    </div>
+                                    <div class="module-item">
+                                        <div class="module-icon"><i class="fas fa-globe"></i></div>
+                                        <div class="module-title">HTTP</div>
+                                        <p>HTTP client and server functionality</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="fun-fact">
+                                    <strong>Exploration Tip:</strong> Use help(module_name) in Python to learn about any module.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn9"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn9" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 9 of 10</div>
+        </div>
+
+        <!-- Slide 10: Review & Quiz -->
+        <div class="slide" id="slide10">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay10">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Review & Quiz</h1>
+                <p class="slide-subtitle">Test your knowledge of Python's Standard Library</p>
+            </div>
+            <div class="slide-content">
+                <div class="centered-content">
+                    <div class="quiz-summary">
+                        <div class="python-mascot">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h2 class="quiz-title">Standard Library Quiz</h2>
+                        <p class="quiz-description">You've completed the Python Standard Library tutorial. Test your knowledge with our interactive quiz!</p>
+                    </div>
+                    
+                    <div class="quiz-main-content">
+                        <div class="key-takeaways">
+                            <h3>Key Takeaways</h3>
+                            <p>Python's Standard Library provides powerful modules that are available without any additional installation. Mastering these modules will make you a more efficient Python programmer.</p>
+                        </div>
+                        
+                        <div class="module-grid">
+                            <div class="module-item">
+                                <div class="module-icon"><i class="fas fa-calculator"></i></div>
+                                <div class="module-title">Math Module</div>
+                                <p>Mathematical functions and constants</p>
+                            </div>
+                            <div class="module-item">
+                                <div class="module-icon"><i class="fas fa-dice"></i></div>
+                                <div class="module-title">Random Module</div>
+                                <p>Random number generation</p>
+                            </div>
+                            <div class="module-item">
+                                <div class="module-icon"><i class="fas fa-clock"></i></div>
+                                <div class="module-title">Datetime Module</div>
+                                <p>Date and time manipulation</p>
+                            </div>
+                        </div>
+                        
+                        <button class="quiz-btn" onclick="startQuiz()">
+                            <i class="fas fa-play-circle"></i> Attempt Quiz Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn10"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn10" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 10 of 10</div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for slide navigation and functionality
+        let currentSlide = 1;
+        const totalSlides = 10;
+        let slideTimer;
+        let timeLeft = 60; // 60 seconds per slide
+        let timerActive = true;
+
+        // Initialize the presentation
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgressBar();
+            startTimer();
+            setupNavigation();
+            disableAllNextButtons();
+        });
+
+        // Disable all next buttons initially
+        function disableAllNextButtons() {
+            for (let i = 1; i <= totalSlides; i++) {
+                const nextBtn = document.getElementById(`nextBtn${i}`);
+                if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        // Enable next button for current slide
+        function enableNextButton() {
+            const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+            if (nextBtn) {
+                nextBtn.disabled = false;
+                // Update timer display to show completion
+                const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+                if (timerElement) {
+                    timerElement.textContent = '00:00';
+                    timerElement.className = 'timer-complete';
+                }
+            }
+        }
+
+        // Update progress bar based on current slide
+        function updateProgressBar() {
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            // Update all slide counters
+            document.querySelectorAll('.slide-counter').forEach(counter => {
+                counter.textContent = `Slide ${currentSlide} of ${totalSlides}`;
+            });
+        }
+
+        // Timer functionality for each slide
+        function startTimer() {
+            clearInterval(slideTimer);
+            timeLeft = 60;
+            updateTimerDisplay();
+            timerActive = true;
+            
+            // Reset timer display style
+            const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+            if (timerElement) {
+                timerElement.className = 'timer-warning';
+            }
+            
+            slideTimer = setInterval(function() {
+                if (timerActive) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(slideTimer);
+                        timerActive = false;
+                        enableNextButton();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Update timer display for current slide
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const timerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Update timer for current slide
+            const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+            if (timerElement) {
+                timerElement.textContent = timerText;
+                
+                // Change color when time is running low
+                if (timeLeft <= 10) {
+                    timerElement.style.color = 'var(--danger)';
+                } else if (timeLeft <= 30) {
+                    timerElement.style.color = 'var(--warning)';
+                }
+            }
+        }
+
+        // Navigation between slides
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide++;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateProgressBar();
+                startTimer();
+                
+                // Disable next button for the new slide
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide--;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateProgressBar();
+                startTimer();
+                
+                // Enable next button if returning to a completed slide
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn && timeLeft <= 0) {
+                    nextBtn.disabled = false;
+                } else if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        // Set up navigation buttons
+        function setupNavigation() {
+            // Next buttons
+            for (let i = 1; i <= totalSlides; i++) {
+                const nextBtn = document.getElementById(`nextBtn${i}`);
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', nextSlide);
+                }
+                
+                // Previous buttons (skip slide 1 as it doesn't have a previous button)
+                if (i > 1) {
+                    const prevBtn = document.getElementById(`prevBtn${i}`);
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', prevSlide);
+                    }
+                }
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                // Only allow navigation if timer has completed
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn && !nextBtn.disabled) {
+                    nextSlide();
+                }
+            } else if (event.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Quiz function - redirect to quiz page
+        function startQuiz() {
+            // In a real application, this would redirect to a quiz page
+            // For demonstration, we'll show an alert
+            alert('Redirecting to the quiz page! In a real application, this would take you to the quiz.');
+            
+            // Uncomment the line below for actual redirection
+            // window.location.href = 'quiz.html';
+        }
+    </script>
+</body>
+</html>

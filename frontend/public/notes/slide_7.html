@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Programming - Object-Oriented Programming</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #306998;
+            --secondary: #FFD43B;
+            --accent: #4B8BBE;
+            --light: #f5f5f5;
+            --dark: #333;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: var(--dark);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .slide-container {
+            width: 90vw;
+            height: 85vh;
+            max-width: 1100px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: white;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.5s ease forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .slide-header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+            padding: 0 10px;
+            position: relative;
+            height: auto;
+        }
+        
+        .slide-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .slide-subtitle {
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 400;
+        }
+        
+        .slide-content {
+            width: 100%;
+            height: calc(100% - 140px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 0 10px;
+            overflow: hidden;
+            flex: 1;
+        }
+        
+        .content-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            overflow: hidden;
+            height: 100%;
+            flex: 1;
+        }
+        
+        .content-row {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            align-items: flex-start;
+            justify-content: center;
+            min-height: 0;
+            height: 100%;
+            flex: 1;
+        }
+        
+        .text-content {
+            flex: 1;
+            max-width: 500px;
+            min-height: 0;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .visual-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 400px;
+            min-height: 0;
+            height: 100%;
+        }
+        
+        .icon-large {
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+        
+        .section {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            width: 100%;
+            min-height: 0;
+            overflow: hidden;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-content {
+            line-height: 1.5;
+            font-size: 1rem;
+            min-height: 0;
+            overflow: hidden;
+            flex: 1;
+        }
+        
+        .section-content ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        
+        .section-content li {
+            margin-bottom: 8px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .feature-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--accent);
+            transition: transform 0.3s;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .feature-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .feature-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+        
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 5px 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+            max-height: 100%;
+        }
+        
+        .code-keyword {
+            color: #f92672;
+        }
+        
+        .code-function {
+            color: #66d9ef;
+        }
+        
+        .code-string {
+            color: #a6e22e;
+        }
+        
+        .code-comment {
+            color: #75715e;
+        }
+        
+        .nav-buttons {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding-left: 20px;
+            padding-right: 60px;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .slide-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--primary);
+            font-weight: bold;
+            background: rgba(255,255,255,0.8);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+        
+        .python-logo {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        
+        .fun-fact {
+            background: linear-gradient(135deg, var(--secondary) 0%, #FFE873 100%);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+            border-left: 4px solid var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .python-mascot {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary);
+        }
+        
+        .slide-timer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 0 0 0 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+        }
+        
+        .compact-list {
+            padding-left: 15px;
+            margin: 5px 0;
+        }
+        
+        .compact-list li {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            gap: 15px;
+            width: 100%;
+            padding: 10px 0;
+            overflow: hidden;
+        }
+        
+        .quiz-icon {
+            font-size: 4rem;
+            color: var(--primary);
+        }
+        
+        .quiz-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .quiz-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .quiz-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-top: 10px;
+        }
+        
+        .quiz-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .key-takeaways {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 100%;
+            max-height: 150px;
+            overflow: hidden;
+        }
+        
+        .key-takeaways h3 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .key-takeaways p {
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        .timer-warning {
+            color: var(--warning);
+            font-weight: bold;
+        }
+        
+        .timer-complete {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .concept-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            border-top: 4px solid var(--primary);
+            transition: transform 0.3s;
+        }
+        
+        .concept-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .concept-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .concept-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+        
+        .slide10-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            padding: 10px 0;
+        }
+        
+        .quiz-summary {
+            text-align: center;
+            margin-bottom: 20px;
+            max-width: 700px;
+        }
+        
+        .quiz-main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>       
+
+        <!-- Slide 1: Introduction to OOP -->
+        <div class="slide active" id="slide1">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay">Timer: <span class="timer-warning">01:00</span></div>
+                <div class="python-mascot">
+                    <i class="fas fa-cube"></i>
+                </div>
+                <h1 class="slide-title">Object-Oriented Programming</h1>
+                <p class="slide-subtitle">Understanding OOP concepts in Python</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Object-Oriented Programming (OOP) is a programming paradigm based on the concept of "objects" which can contain data and code to manipulate that data.</p>
+                                    <p>OOP helps in organizing complex programs by:</p>
+                                    <ul class="compact-list">
+                                        <li>Breaking problems into smaller, manageable objects</li>
+                                        <li>Encouraging code reuse through inheritance</li>
+                                        <li>Protecting data through encapsulation</li>
+                                        <li>Allowing flexible code through polymorphism</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Did you know?</strong> Python supports multiple programming paradigms, including procedural, functional, and object-oriented programming.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Simple class definition</span><br>
+                                <span class="code-keyword">class</span> Dog:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>, name, age):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.name = name<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.age = age<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">bark</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"{self.name} says woof!"</span>)<br><br>
+                                
+                                <span class="code-comment"># Creating objects (instances)</span><br>
+                                my_dog = Dog(<span class="code-string">"Rex"</span>, 3)<br>
+                                my_dog.bark()  <span class="code-comment"># Output: Rex says woof!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn1" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 1 of 10</div>
+        </div>
+
+        <!-- Slide 2: Classes and Objects -->
+        <div class="slide" id="slide2">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay2">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Classes and Objects</h1>
+                <p class="slide-subtitle">The building blocks of OOP</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>A <strong>class</strong> is a blueprint for creating objects. It defines the attributes and methods that the objects will have.</p>
+                                    <p>An <strong>object</strong> is an instance of a class. It has actual values for the attributes defined in the class.</p>
+                                    
+                                    <div class="concept-grid">
+                                        <div class="concept-item">
+                                            <div class="concept-icon">
+                                                <i class="fas fa-cubes"></i>
+                                            </div>
+                                            <div class="concept-title">Class</div>
+                                            <p>Blueprint or template</p>
+                                        </div>
+                                        <div class="concept-item">
+                                            <div class="concept-icon">
+                                                <i class="fas fa-cube"></i>
+                                            </div>
+                                            <div class="concept-title">Object</div>
+                                            <p>Instance of a class</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Python Fact:</strong> Everything in Python is an object, including integers, strings, functions, and classes themselves.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Defining a class</span><br>
+                                <span class="code-keyword">class</span> Car:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Class attribute (shared by all instances)</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;wheels = 4<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Constructor method</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>, brand, model, year):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Instance attributes</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.brand = brand<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.model = model<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.year = year<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.mileage = 0<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">drive</span>(<span class="code-keyword">self</span>, miles):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.mileage += miles<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Driving {miles} miles. Total mileage: {self.mileage}"</span>)<br><br>
+                                
+                                <span class="code-comment"># Creating objects</span><br>
+                                car1 = Car(<span class="code-string">"Toyota"</span>, <span class="code-string">"Camry"</span>, 2020)<br>
+                                car2 = Car(<span class="code-string">"Honda"</span>, <span class="code-string">"Civic"</span>, 2022)<br><br>
+                                
+                                car1.drive(100)<br>
+                                print(car1.brand)  <span class="code-comment"># Toyota</span><br>
+                                print(Car.wheels)  <span class="code-comment"># 4 (class attribute)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn2"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn2" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 2 of 10</div>
+        </div>
+
+        <!-- Slide 3: Inheritance -->
+        <div class="slide" id="slide3">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay3">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Inheritance</h1>
+                <p class="slide-subtitle">Creating new classes from existing ones</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Inheritance allows a class (child) to inherit attributes and methods from another class (parent). This promotes code reuse and establishes relationships between classes.</p>
+                                    <p>Types of inheritance in Python:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Single inheritance:</strong> A child class inherits from one parent class</li>
+                                        <li><strong>Multiple inheritance:</strong> A child class inherits from multiple parent classes</li>
+                                        <li><strong>Multilevel inheritance:</strong> A child class inherits from a parent which itself inherits from another class</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Python Feature:</strong> Python supports multiple inheritance, allowing a class to inherit from multiple parent classes.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Parent class</span><br>
+                                <span class="code-keyword">class</span> Animal:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>, name):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.name = name<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">speak</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"{self.name} makes a sound"</span>)<br><br>
+                                
+                                <span class="code-comment"># Child class inheriting from Animal</span><br>
+                                <span class="code-keyword">class</span> Dog(Animal):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">speak</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"{self.name} says woof!"</span>)<br><br>
+                                
+                                <span class="code-comment"># Another child class</span><br>
+                                <span class="code-keyword">class</span> Cat(Animal):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">speak</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"{self.name} says meow!"</span>)<br><br>
+                                
+                                <span class="code-comment"># Using the classes</span><br>
+                                animal = Animal(<span class="code-string">"Generic Animal"</span>)<br>
+                                dog = Dog(<span class="code-string">"Rex"</span>)<br>
+                                cat = Cat(<span class="code-string">"Whiskers"</span>)<br><br>
+                                
+                                animal.speak()  <span class="code-comment"># Generic Animal makes a sound</span><br>
+                                dog.speak()     <span class="code-comment"># Rex says woof!</span><br>
+                                cat.speak()     <span class="code-comment"># Whiskers says meow!</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn3"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn3" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 3 of 10</div>
+        </div>
+
+        <!-- Slide 4: Encapsulation -->
+        <div class="slide" id="slide4">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay4">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Encapsulation</h1>
+                <p class="slide-subtitle">Data hiding and access control</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Encapsulation is the concept of bundling data (attributes) and methods that operate on that data within a single unit (class), and restricting direct access to some of the object's components.</p>
+                                    <p>Access modifiers in Python:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Public:</strong> Accessible from anywhere (default)</li>
+                                        <li><strong>Protected:</strong> Accessible within the class and its subclasses (prefix with _)</li>
+                                        <li><strong>Private:</strong> Accessible only within the class (prefix with __)</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Python Convention:</strong> Python doesn't enforce access restrictions strictly. It's more about conventions and indicating intent.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Example of encapsulation</span><br>
+                                <span class="code-keyword">class</span> BankAccount:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>, account_holder, balance):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.account_holder = account_holder  <span class="code-comment"># Public</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>._account_number = <span class="code-string">"12345"</span>     <span class="code-comment"># Protected</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.__balance = balance             <span class="code-comment"># Private</span><br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Public method to access private attribute</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">get_balance</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return <span class="code-keyword">self</span>.__balance<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Public method to modify private attribute</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">deposit</span>(<span class="code-keyword">self</span>, amount):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> amount > 0:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.__balance += amount<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Deposited ${amount}. New balance: ${self.__balance}"</span>)<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">withdraw</span>(<span class="code-keyword">self</span>, amount):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> 0 < amount <= <span class="code-keyword">self</span>.__balance:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.__balance -= amount<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Withdrew ${amount}. New balance: ${self.__balance}"</span>)<br><br>
+                                
+                                <span class="code-comment"># Using the class</span><br>
+                                account = BankAccount(<span class="code-string">"Alice"</span>, 1000)<br>
+                                print(account.account_holder)  <span class="code-comment"># Alice (public)</span><br>
+                                print(account.get_balance())   <span class="code-comment"># 1000 (via method)</span><br>
+                                account.deposit(500)<br>
+                                <span class="code-comment"># account.__balance  # This would cause an error</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn4"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn4" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 4 of 10</div>
+        </div>
+
+        <!-- Slide 5: Polymorphism -->
+        <div class="slide" id="slide5">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay5">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Polymorphism</h1>
+                <p class="slide-subtitle">One interface, multiple implementations</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Polymorphism allows objects of different classes to be treated as objects of a common superclass. It enables a single interface to represent different underlying forms (data types).</p>
+                                    <p>Types of polymorphism in Python:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Method overriding:</strong> Child class provides a specific implementation of a method already defined in its parent class</li>
+                                        <li><strong>Method overloading:</strong> Python doesn't support traditional method overloading, but we can achieve similar functionality with default parameters</li>
+                                        <li><strong>Duck typing:</strong> "If it walks like a duck and quacks like a duck, it must be a duck" - Python's approach to polymorphism</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Python Philosophy:</strong> Python uses duck typing, focusing on an object's behavior rather than its type.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Polymorphism with inheritance</span><br>
+                                <span class="code-keyword">class</span> Shape:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">area</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">pass</span><br><br>
+                                
+                                <span class="code-keyword">class</span> Rectangle(Shape):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>, width, height):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.width = width<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.height = height<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">area</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return <span class="code-keyword">self</span>.width * <span class="code-keyword">self</span>.height<br><br>
+                                
+                                <span class="code-keyword">class</span> Circle(Shape):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>, radius):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.radius = radius<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">area</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 3.14 * <span class="code-keyword">self</span>.radius ** 2<br><br>
+                                
+                                <span class="code-comment"># Duck typing example</span><br>
+                                <span class="code-keyword">class</span> Triangle:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>, base, height):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.base = base<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.height = height<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">area</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 0.5 * <span class="code-keyword">self</span>.base * <span class="code-keyword">self</span>.height<br><br>
+                                
+                                <span class="code-comment"># Function that uses polymorphism</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">print_area</span>(shape):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Area: {shape.area()}"</span>)<br><br>
+                                
+                                <span class="code-comment"># Using different objects with the same interface</span><br>
+                                shapes = [Rectangle(4, 5), Circle(3), Triangle(6, 4)]<br>
+                                <span class="code-keyword">for</span> shape <span class="code-keyword">in</span> shapes:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print_area(shape)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn5"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn5" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 5 of 10</div>
+        </div>
+
+        <!-- Continue with slides 6-9 with the same pattern -->
+        <!-- Slide 6: Special Methods -->
+        <div class="slide" id="slide6">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay6">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Special Methods</h1>
+                <p class="slide-subtitle">Magic methods in Python classes</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Special methods (also called magic or dunder methods) allow you to define how objects of your class behave with Python's built-in operations.</p>
+                                    <p>Common special methods:</p>
+                                    <ul class="compact-list">
+                                        <li><code>__init__</code>: Constructor, called when creating an instance</li>
+                                        <li><code>__str__</code>: Returns a string representation of the object</li>
+                                        <li><code>__len__</code>: Defines behavior for the len() function</li>
+                                        <li><code>__add__</code>: Defines behavior for the + operator</li>
+                                        <li><code>__eq__</code>: Defines behavior for the == operator</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Python Tip:</strong> Special methods are what make Python's syntax so expressive and intuitive for custom classes.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Class with special methods</span><br>
+                                <span class="code-keyword">class</span> Vector:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>, x, y):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.x = x<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.y = y<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__str__</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return <span class="code-string">f"Vector({self.x}, {self.y})"</span><br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__add__</span>(<span class="code-keyword">self</span>, other):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return Vector(<span class="code-keyword">self</span>.x + other.x, <span class="code-keyword">self</span>.y + other.y)<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__eq__</span>(<span class="code-keyword">self</span>, other):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return <span class="code-keyword">self</span>.x == other.x <span class="code-keyword">and</span> <span class="code-keyword">self</span>.y == other.y<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__len__</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return 2  <span class="code-comment"># Vectors always have 2 components</span><br><br>
+                                
+                                <span class="code-comment"># Using the Vector class</span><br>
+                                v1 = Vector(2, 3)<br>
+                                v2 = Vector(1, 4)<br><br>
+                                
+                                print(v1)           <span class="code-comment"># Vector(2, 3) - uses __str__</span><br>
+                                v3 = v1 + v2       <span class="code-comment"># Uses __add__</span><br>
+                                print(v3)           <span class="code-comment"># Vector(3, 7)</span><br>
+                                print(v1 == v2)    <span class="code-comment"># False - uses __eq__</span><br>
+                                print(len(v1))     <span class="code-comment"># 2 - uses __len__</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn6"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn6" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 6 of 10</div>
+        </div>
+
+        <!-- Slide 7: Class Methods and Static Methods -->
+        <div class="slide" id="slide7">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay7">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Class and Static Methods</h1>
+                <p class="slide-subtitle">Alternative method types in classes</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Python classes support different types of methods:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Instance methods:</strong> Regular methods that operate on an instance (take self as first parameter)</li>
+                                        <li><strong>Class methods:</strong> Methods that operate on the class itself (take cls as first parameter)</li>
+                                        <li><strong>Static methods:</strong> Methods that don't operate on the instance or class (no special first parameter)</li>
+                                    </ul>
+                                    
+                                    <div class="concept-grid">
+                                        <div class="concept-item">
+                                            <div class="concept-icon">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                            <div class="concept-title">Instance Method</div>
+                                            <p>Works with instance data</p>
+                                        </div>
+                                        <div class="concept-item">
+                                            <div class="concept-icon">
+                                                <i class="fas fa-users"></i>
+                                            </div>
+                                            <div class="concept-title">Class Method</div>
+                                            <p>Works with class data</p>
+                                        </div>
+                                        <div class="concept-item">
+                                            <div class="concept-icon">
+                                                <i class="fas fa-cog"></i>
+                                            </div>
+                                            <div class="concept-title">Static Method</div>
+                                            <p>Utility function in class namespace</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Class with different method types</span><br>
+                                <span class="code-keyword">class</span> MyClass:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;class_attribute = <span class="code-string">"I'm a class attribute"</span><br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>, value):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.instance_attribute = value<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Instance method</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">instance_method</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return <span class="code-string">f"Instance value: {self.instance_attribute}"</span><br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Class method</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;@classmethod<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">class_method</span>(cls):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return <span class="code-string">f"Class attribute: {cls.class_attribute}"</span><br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Static method</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;@staticmethod<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">static_method</span>(x, y):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return <span class="code-string">f"Sum: {x + y}"</span><br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Alternative constructor using class method</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;@classmethod<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">from_string</span>(cls, string):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;value = int(string)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return cls(value)<br><br>
+                                
+                                <span class="code-comment"># Using the methods</span><br>
+                                obj1 = MyClass(10)<br>
+                                print(obj1.instance_method())  <span class="code-comment"># Instance value: 10</span><br>
+                                print(MyClass.class_method())  <span class="code-comment"># Class attribute: I'm a class attribute</span><br>
+                                print(MyClass.static_method(5, 3))  <span class="code-comment"># Sum: 8</span><br><br>
+                                
+                                <span class="code-comment"># Using alternative constructor</span><br>
+                                obj2 = MyClass.from_string(<span class="code-string">"25"</span>)<br>
+                                print(obj2.instance_method())  <span class="code-comment"># Instance value: 25</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn7"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn7" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 7 of 10</div>
+        </div>
+
+        <!-- Slide 8: Property Decorators -->
+        <div class="slide" id="slide8">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay8">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Property Decorators</h1>
+                <p class="slide-subtitle">Controlled attribute access</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Property decorators allow you to define methods that can be accessed like attributes, providing a way to implement getters, setters, and deleters in a Pythonic way.</p>
+                                    <p>Benefits of using properties:</p>
+                                    <ul class="compact-list">
+                                        <li>Validate data before setting attributes</li>
+                                        <li>Compute values on the fly</li>
+                                        <li>Maintain backward compatibility when changing implementation</li>
+                                        <li>Create read-only or write-only attributes</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Pythonic Approach:</strong> Properties allow you to start with simple attributes and later add validation or computation without changing the interface.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Class using property decorators</span><br>
+                                <span class="code-keyword">class</span> Temperature:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>, celsius):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>._celsius = celsius<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;@property<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">celsius</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return <span class="code-keyword">self</span>._celsius<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;@celsius.setter<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">celsius</span>(<span class="code-keyword">self</span>, value):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> value < -273.15:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise ValueError(<span class="code-string">"Temperature below absolute zero is not possible"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>._celsius = value<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;@property<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">fahrenheit</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Computed property</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return (<span class="code-keyword">self</span>._celsius * 9/5) + 32<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;@fahrenheit.setter<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">fahrenheit</span>(<span class="code-keyword">self</span>, value):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Set celsius based on fahrenheit value</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>._celsius = (value - 32) * 5/9<br><br>
+                                
+                                <span class="code-comment"># Using the Temperature class</span><br>
+                                temp = Temperature(25)<br>
+                                print(temp.celsius)      <span class="code-comment"># 25 (getter)</span><br>
+                                print(temp.fahrenheit)   <span class="code-comment"># 77.0 (computed)</span><br><br>
+                                
+                                temp.celsius = 30        <span class="code-comment"># Setter with validation</span><br>
+                                print(temp.fahrenheit)   <span class="code-comment"># 86.0</span><br><br>
+                                
+                                temp.fahrenheit = 100    <span class="code-comment"># Set celsius via fahrenheit</span><br>
+                                print(temp.celsius)      <span class="code-comment"># 37.777...</span><br><br>
+                                
+                                <span class="code-comment"># This would raise an error:</span><br>
+                                <span class="code-comment"># temp.celsius = -300  # ValueError</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn8"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn8" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 8 of 10</div>
+        </div>
+
+        <!-- Slide 9: OOP Best Practices -->
+        <div class="slide" id="slide9">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay9">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">OOP Best Practices</h1>
+                <p class="slide-subtitle">Writing clean and maintainable object-oriented code</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Follow these best practices to write effective object-oriented code in Python:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Follow naming conventions:</strong> Use CamelCase for class names and snake_case for method/attribute names</li>
+                                        <li><strong>Keep classes focused:</strong> Each class should have a single responsibility</li>
+                                        <li><strong>Use composition over inheritance:</strong> Favor object composition over class inheritance when possible</li>
+                                        <li><strong>Document your classes:</strong> Use docstrings to explain the purpose of your classes and methods</li>
+                                        <li><strong>Use properties for computed attributes:</strong> Instead of getter/setter methods</li>
+                                        <li><strong>Leverage polymorphism:</strong> Design interfaces that can work with multiple object types</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Zen of Python:</strong> "Simple is better than complex" and "Flat is better than nested" - these principles apply to OOP design too.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Example of good OOP practices</span><br>
+                                <span class="code-keyword">class</span> BankAccount:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">"""A simple bank account class.</span><br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;Attributes:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;    account_holder (str): The name of the account holder<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;    balance (float): The current account balance<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;"""</span><br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__init__</span>(<span class="code-keyword">self</span>, account_holder, initial_balance=0):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>.account_holder = account_holder<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>._balance = initial_balance<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;@property<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">balance</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">"""Get the current balance."""</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return <span class="code-keyword">self</span>._balance<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">deposit</span>(<span class="code-keyword">self</span>, amount):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">"""Deposit money into the account."""</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> amount <= 0:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise ValueError(<span class="code-string">"Deposit amount must be positive"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>._balance += amount<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return <span class="code-keyword">self</span>._balance<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">withdraw</span>(<span class="code-keyword">self</span>, amount):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">"""Withdraw money from the account."""</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> amount <= 0:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise ValueError(<span class="code-string">"Withdrawal amount must be positive"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> amount > <span class="code-keyword">self</span>._balance:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise ValueError(<span class="code-string">"Insufficient funds"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">self</span>._balance -= amount<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return <span class="code-keyword">self</span>._balance<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">__str__</span>(<span class="code-keyword">self</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return <span class="code-string">f"BankAccount(holder='{self.account_holder}', balance={self._balance})"</span><br><br>
+                                
+                                <span class="code-comment"># Using the well-designed class</span><br>
+                                account = BankAccount(<span class="code-string">"Alice"</span>, 1000)<br>
+                                print(account)           <span class="code-comment"># Clear string representation</span><br>
+                                account.deposit(500)<br>
+                                print(account.balance)   <span class="code-comment"># Using property</span><br>
+                                account.withdraw(200)<br>
+                                print(account)           <span class="code-comment"># Updated balance</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn9"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn9" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 9 of 10</div>
+        </div>
+
+        <!-- Slide 10: Review & Quiz -->
+        <div class="slide" id="slide10">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay10">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Review & Quiz</h1>
+                <p class="slide-subtitle">Test your knowledge of Python OOP</p>
+            </div>
+            <div class="slide-content">
+                <div class="slide10-content">
+                    <div class="quiz-summary">
+                        <div class="python-mascot">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h2 class="quiz-title">OOP Concepts Quiz</h2>
+                        <p class="quiz-description">You've completed the Python Object-Oriented Programming tutorial. Test your knowledge with our interactive quiz!</p>
+                    </div>
+                    
+                    <div class="quiz-main-content">
+                        <div class="key-takeaways">
+                            <h3>Key Takeaways</h3>
+                            <p>Object-Oriented Programming helps organize code into reusable, maintainable components. Mastering classes, inheritance, encapsulation, and polymorphism will make you a more effective Python programmer.</p>
+                        </div>
+                        
+                        <button class="quiz-btn" onclick="startQuiz()">
+                            <i class="fas fa-play-circle"></i> Attempt Quiz Now
+                        </button>
+                        
+                        <p class="quiz-description">The quiz contains 10 questions covering all OOP concepts we've learned.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn10"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn10" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 10 of 10</div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for slide navigation and functionality
+        let currentSlide = 1;
+        const totalSlides = 10;
+        let slideTimer;
+        let timeLeft = 60; // 60 seconds per slide
+        let timerActive = true;
+
+        // Initialize the presentation
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgressBar();
+            startTimer();
+            setupNavigation();
+            disableAllNextButtons();
+        });
+
+        // Disable all next buttons initially
+        function disableAllNextButtons() {
+            for (let i = 1; i <= totalSlides; i++) {
+                const nextBtn = document.getElementById(`nextBtn${i}`);
+                if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        // Enable next button for current slide
+        function enableNextButton() {
+            const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+            if (nextBtn) {
+                nextBtn.disabled = false;
+                // Update timer display to show completion
+                const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+                if (timerElement) {
+                    timerElement.textContent = '00:00';
+                    timerElement.className = 'timer-complete';
+                }
+            }
+        }
+
+        // Update progress bar based on current slide
+        function updateProgressBar() {
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            // Update all slide counters
+            document.querySelectorAll('.slide-counter').forEach(counter => {
+                counter.textContent = `Slide ${currentSlide} of ${totalSlides}`;
+            });
+        }
+
+        // Timer functionality for each slide
+        function startTimer() {
+            clearInterval(slideTimer);
+            timeLeft = 60;
+            updateTimerDisplay();
+            timerActive = true;
+            
+            // Reset timer display style
+            const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+            if (timerElement) {
+                timerElement.className = 'timer-warning';
+            }
+            
+            slideTimer = setInterval(function() {
+                if (timerActive) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(slideTimer);
+                        timerActive = false;
+                        enableNextButton();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Update timer display for current slide
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const timerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Update timer for current slide
+            const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+            if (timerElement) {
+                timerElement.textContent = timerText;
+                
+                // Change color when time is running low
+                if (timeLeft <= 10) {
+                    timerElement.style.color = 'var(--danger)';
+                } else if (timeLeft <= 30) {
+                    timerElement.style.color = 'var(--warning)';
+                }
+            }
+        }
+
+        // Navigation between slides
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide++;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateProgressBar();
+                startTimer();
+                
+                // Disable next button for the new slide
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide--;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateProgressBar();
+                startTimer();
+                
+                // Enable next button if returning to a completed slide
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn && timeLeft <= 0) {
+                    nextBtn.disabled = false;
+                } else if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        // Set up navigation buttons
+        function setupNavigation() {
+            // Next buttons
+            for (let i = 1; i <= totalSlides; i++) {
+                const nextBtn = document.getElementById(`nextBtn${i}`);
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', nextSlide);
+                }
+                
+                // Previous buttons (skip slide 1 as it doesn't have a previous button)
+                if (i > 1) {
+                    const prevBtn = document.getElementById(`prevBtn${i}`);
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', prevSlide);
+                    }
+                }
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                // Only allow navigation if timer has completed
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn && !nextBtn.disabled) {
+                    nextSlide();
+                }
+            } else if (event.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Quiz function - redirect to quiz page
+        function startQuiz() {
+            // In a real application, this would redirect to a quiz page
+            // For demonstration, we'll show an alert
+            alert('Redirecting to the quiz page! In a real application, this would take you to the quiz.');
+            
+            // Uncomment the line below for actual redirection
+            // window.location.href = 'quiz.html';
+        }
+    </script>
+</body>
+</html>

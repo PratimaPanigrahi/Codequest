@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Programming - Control Flow: Loops</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #306998;
+            --secondary: #FFD43B;
+            --accent: #4B8BBE;
+            --light: #f5f5f5;
+            --dark: #333;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: var(--dark);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .slide-container {
+            width: 90vw;
+            height: 85vh;
+            max-width: 1100px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: white;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.5s ease forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .slide-header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+            padding: 0 10px;
+            position: relative;
+            height: auto;
+        }
+        
+        .slide-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .slide-subtitle {
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 400;
+        }
+        
+        .slide-content {
+            width: 100%;
+            height: calc(100% - 140px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 0 10px;
+            overflow: hidden;
+            flex: 1;
+        }
+        
+        .content-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            overflow: hidden;
+            height: 100%;
+            flex: 1;
+        }
+        
+        .content-row {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            align-items: flex-start;
+            justify-content: center;
+            min-height: 0;
+            height: 100%;
+            flex: 1;
+        }
+        
+        .text-content {
+            flex: 1;
+            max-width: 500px;
+            min-height: 0;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .visual-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 400px;
+            min-height: 0;
+            height: 100%;
+        }
+        
+        .icon-large {
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+        
+        .section {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            width: 100%;
+            min-height: 0;
+            overflow: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-content {
+            line-height: 1.5;
+            font-size: 1rem;
+            min-height: 0;
+            overflow: auto;
+            flex: 1;
+        }
+        
+        .section-content ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        
+        .section-content li {
+            margin-bottom: 8px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .feature-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--accent);
+            transition: transform 0.3s;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .feature-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .feature-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+        
+        .applications-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .application-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .application-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 5px 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            width: 100%;
+            max-width: 400px;
+            overflow: auto;
+            max-height: 100%;
+        }
+        
+        .code-keyword {
+            color: #f92672;
+        }
+        
+        .code-function {
+            color: #66d9ef;
+        }
+        
+        .code-string {
+            color: #a6e22e;
+        }
+        
+        .code-comment {
+            color: #75715e;
+        }
+        
+        .nav-buttons {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding-left: 20px;
+            padding-right: 60px;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .slide-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--primary);
+            font-weight: bold;
+            background: rgba(255,255,255,0.8);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+        
+        .python-logo {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        
+        .history-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            position: relative;
+            width: 100%;
+        }
+        
+        .history-timeline::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+        }
+        
+        .timeline-item {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+        
+        .timeline-year {
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .reflection-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 15px;
+            width: 100%;
+            max-height: 200px;
+            overflow: hidden;
+        }
+        
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            gap: 15px;
+            width: 100%;
+            padding: 10px 0;
+            overflow: hidden;
+        }
+        
+        .quiz-icon {
+            font-size: 4rem;
+            color: var(--primary);
+        }
+        
+        .quiz-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .quiz-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .quiz-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-top: 10px;
+        }
+        
+        .quiz-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .fun-fact {
+            background: linear-gradient(135deg, var(--secondary) 0%, #FFE873 100%);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+            border-left: 4px solid var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .python-mascot {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary);
+        }
+        
+        .interactive-element {
+            background: var(--light);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .interactive-element:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .quote-box {
+            background: linear-gradient(135deg, var(--accent) 0%, #6BA3D6 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+            position: relative;
+            font-size: 0.9rem;
+        }
+        
+        .quote-box::before {
+            content: '"';
+            font-size: 3rem;
+            position: absolute;
+            top: -5px;
+            left: 8px;
+            opacity: 0.3;
+        }
+        
+        .slide-timer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 0 0 0 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+        }
+        
+        .data-type-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .data-type-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            border-top: 4px solid var(--primary);
+            transition: transform 0.3s;
+        }
+        
+        .data-type-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .data-type-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .data-type-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+        
+        /* Additional styles for better content management */
+        .scrollable-content {
+            overflow: auto;
+            max-height: 100%;
+            width: 100%;
+        }
+        
+        .compact-list {
+            padding-left: 15px;
+            margin: 5px 0;
+        }
+        
+        .compact-list li {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        /* Fix for Slide 8 - remove scrolling */
+        .no-scroll-section {
+            overflow: hidden !important;
+        }
+        
+        .no-scroll-section .section-content {
+            overflow: hidden !important;
+        }
+        
+        /* Quiz attempt button styles */
+        .quiz-attempt-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            overflow: hidden;
+        }
+        
+        /* Fix for Slide 10 - remove scrolling and adjust layout */
+        .slide10-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            padding: 10px 0;
+        }
+        
+        .quiz-summary {
+            text-align: center;
+            margin-bottom: 20px;
+            max-width: 700px;
+        }
+        
+        .quiz-main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            overflow: hidden;
+        }
+        
+        .key-takeaways {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 100%;
+            max-height: 150px;
+            overflow: hidden;
+        }
+        
+        .key-takeaways h3 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .key-takeaways p {
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        /* Timer warning style */
+        .timer-warning {
+            color: var(--warning);
+            font-weight: bold;
+        }
+        
+        .timer-complete {
+            color: var(--success);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>       
+
+        <!-- Slide 1: Introduction to Loops -->
+        <div class="slide active" id="slide1">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay">Timer: <span class="timer-warning">01:00</span></div>
+                <div class="python-mascot">
+                    <i class="fas fa-redo"></i>
+                </div>
+                <h1 class="slide-title">Control Flow: Loops</h1>
+                <p class="slide-subtitle">Repeating actions efficiently in Python</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Loops are fundamental programming constructs that allow you to execute a block of code repeatedly. They help automate repetitive tasks and process collections of data efficiently.</p>
+                                    <p>Python provides two main types of loops:</p>
+                                    <ul>
+                                        <li><strong>for loops</strong> - Iterate over a sequence (list, tuple, string, etc.)</li>
+                                        <li><strong>while loops</strong> - Repeat as long as a condition is true</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Did you know?</strong> Loops can significantly reduce code duplication and make your programs more readable and maintainable.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Example: Printing numbers 1 to 5</span><br>
+                                <span class="code-comment"># Without a loop (repetitive)</span><br>
+                                print(1)<br>
+                                print(2)<br>
+                                print(3)<br>
+                                print(4)<br>
+                                print(5)<br><br>
+                                
+                                <span class="code-comment"># With a loop (efficient)</span><br>
+                                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(1, 6):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(i)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn1" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 1 of 10</div>
+        </div>
+
+        <!-- Slide 2: The for Loop -->
+        <div class="slide" id="slide2">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay2">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">The for Loop</h1>
+                <p class="slide-subtitle">Iterating through sequences</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>The for loop in Python is used to iterate over a sequence (such as a list, tuple, string, or range) and execute a block of code for each item in the sequence.</p>
+                                    <p>Basic syntax:</p>
+                                    <pre>for item in sequence:
+    # code to execute for each item</pre>
+                                    
+                                    <p>Common uses of for loops:</p>
+                                    <ul>
+                                        <li>Processing items in a list</li>
+                                        <li>Iterating through characters in a string</li>
+                                        <li>Executing code a specific number of times</li>
+                                        <li>Working with dictionary keys and values</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Iterating through a list</span><br>
+                                fruits = [<span class="code-string">"apple"</span>, <span class="code-string">"banana"</span>, <span class="code-string">"cherry"</span>]<br>
+                                <span class="code-keyword">for</span> fruit <span class="code-keyword">in</span> fruits:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(fruit)<br><br>
+                                
+                                <span class="code-comment"># Using range() to repeat an action</span><br>
+                                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(5):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Hello!"</span>)<br><br>
+                                
+                                <span class="code-comment"># Iterating through a string</span><br>
+                                word = <span class="code-string">"Python"</span><br>
+                                <span class="code-keyword">for</span> letter <span class="code-keyword">in</span> word:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(letter)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn2"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn2" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 2 of 10</div>
+        </div>
+
+        <!-- Slide 3: The range() Function -->
+        <div class="slide" id="slide3">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay3">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">The range() Function</h1>
+                <p class="slide-subtitle">Generating sequences of numbers</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>The range() function generates a sequence of numbers and is commonly used with for loops to repeat an action a specific number of times.</p>
+                                    <p>range() can be used in three ways:</p>
+                                    <ul>
+                                        <li><strong>range(stop)</strong> - Generates numbers from 0 to stop-1</li>
+                                        <li><strong>range(start, stop)</strong> - Generates numbers from start to stop-1</li>
+                                        <li><strong>range(start, stop, step)</strong> - Generates numbers with a specified step</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Memory Efficiency:</strong> range() doesn't create a list in memory; it generates numbers on the fly, making it memory efficient for large ranges.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># range(stop) - 0 to 4</span><br>
+                                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(5):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(i, end=<span class="code-string">" "</span>)  <span class="code-comment"># Output: 0 1 2 3 4</span><br><br>
+                                
+                                <span class="code-comment"># range(start, stop) - 2 to 6</span><br>
+                                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(2, 7):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(i, end=<span class="code-string">" "</span>)  <span class="code-comment"># Output: 2 3 4 5 6</span><br><br>
+                                
+                                <span class="code-comment"># range(start, stop, step) - even numbers 0 to 8</span><br>
+                                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(0, 10, 2):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(i, end=<span class="code-string">" "</span>)  <span class="code-comment"># Output: 0 2 4 6 8</span><br><br>
+                                
+                                <span class="code-comment"># Counting backwards</span><br>
+                                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(5, 0, -1):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(i, end=<span class="code-string">" "</span>)  <span class="code-comment"># Output: 5 4 3 2 1</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn3"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn3" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 3 of 10</div>
+        </div>
+
+        <!-- Slide 4: The while Loop -->
+        <div class="slide" id="slide4">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay4">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">The while Loop</h1>
+                <p class="slide-subtitle">Condition-based repetition</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>The while loop repeats a block of code as long as a specified condition is true. It's useful when you don't know in advance how many times you need to loop.</p>
+                                    <p>Basic syntax:</p>
+                                    <pre>while condition:
+    # code to execute while condition is true</pre>
+                                    
+                                    <p>Key points about while loops:</p>
+                                    <ul>
+                                        <li>The condition is checked before each iteration</li>
+                                        <li>You must ensure the condition eventually becomes false to avoid infinite loops</li>
+                                        <li>Useful for user input validation and event-driven programming</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Caution:</strong> Infinite loops can occur if the condition never becomes false. Always ensure your while loop has an exit condition.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Countdown from 5 to 1</span><br>
+                                count = 5<br>
+                                <span class="code-keyword">while</span> count > 0:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(count)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;count -= 1  <span class="code-comment"># Decrement count</span><br>
+                                print(<span class="code-string">"Blast off!"</span>)<br><br>
+                                
+                                <span class="code-comment"># User input validation</span><br>
+                                password = <span class="code-string">""</span><br>
+                                <span class="code-keyword">while</span> password != <span class="code-string">"secret"</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;password = input(<span class="code-string">"Enter the password: "</span>)<br>
+                                print(<span class="code-string">"Access granted!"</span>)<br><br>
+                                
+                                <span class="code-comment"># Sum numbers until 0 is entered</span><br>
+                                total = 0<br>
+                                number = int(input(<span class="code-string">"Enter a number (0 to stop): "</span>))<br>
+                                <span class="code-keyword">while</span> number != 0:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;total += number<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;number = int(input(<span class="code-string">"Enter a number (0 to stop): "</span>))<br>
+                                print(<span class="code-string">"Total:"</span>, total)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn4"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn4" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 4 of 10</div>
+        </div>
+
+        <!-- Slide 5: Loop Control Statements -->
+        <div class="slide" id="slide5">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay5">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Loop Control Statements</h1>
+                <p class="slide-subtitle">break, continue, and pass</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Python provides three statements to control the flow of loops:</p>
+                                    <ul>
+                                        <li><strong>break</strong> - Exits the loop immediately</li>
+                                        <li><strong>continue</strong> - Skips the rest of the current iteration and moves to the next one</li>
+                                        <li><strong>pass</strong> - A null operation; does nothing (used as a placeholder)</li>
+                                    </ul>
+                                    
+                                    <p>These statements give you more control over how your loops execute, allowing you to handle special cases and exceptions.</p>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Tip:</strong> The pass statement is useful when you need a statement for syntax reasons but don't want to execute any code.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Using break to exit early</span><br>
+                                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(10):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> i == 5:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span>  <span class="code-comment"># Exit loop when i is 5</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(i, end=<span class="code-string">" "</span>)  <span class="code-comment"># Output: 0 1 2 3 4</span><br><br>
+                                
+                                <span class="code-comment"># Using continue to skip even numbers</span><br>
+                                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(10):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> i % 2 == 0:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">continue</span>  <span class="code-comment"># Skip even numbers</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(i, end=<span class="code-string">" "</span>)  <span class="code-comment"># Output: 1 3 5 7 9</span><br><br>
+                                
+                                <span class="code-comment"># Using pass as a placeholder</span><br>
+                                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(5):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> i == 2:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">pass</span>  <span class="code-comment"># Do nothing when i is 2</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(i, end=<span class="code-string">" "</span>)  <span class="code-comment"># Output: 0 1 2 3 4</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn5"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn5" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 5 of 10</div>
+        </div>
+
+        <!-- Slide 6: Nested Loops -->
+        <div class="slide" id="slide6">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay6">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Nested Loops</h1>
+                <p class="slide-subtitle">Loops within loops</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>A nested loop is a loop inside another loop. The inner loop completes all its iterations for each iteration of the outer loop.</p>
+                                    <p>Common uses of nested loops:</p>
+                                    <ul>
+                                        <li>Working with multi-dimensional data (matrices, tables)</li>
+                                        <li>Generating combinations and permutations</li>
+                                        <li>Processing grid-based data</li>
+                                        <li>Creating patterns</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Performance Note:</strong> Nested loops can significantly increase the number of iterations. Be cautious with large datasets to avoid performance issues.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Multiplication table using nested loops</span><br>
+                                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(1, 4):  <span class="code-comment"># Outer loop</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">for</span> j <span class="code-keyword">in</span> range(1, 4):  <span class="code-comment"># Inner loop</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(f<span class="code-string">"{i} x {j} = {i*j}"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"---"</span>)  <span class="code-comment"># Separator after each table</span><br><br>
+                                
+                                <span class="code-comment"># Pattern generation</span><br>
+                                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(5):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">for</span> j <span class="code-keyword">in</span> range(i+1):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"*"</span>, end=<span class="code-string">""</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print()  <span class="code-comment"># New line after each row</span><br><br>
+                                
+                                <span class="code-comment"># Processing a 2D list (matrix)</span><br>
+                                matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]<br>
+                                <span class="code-keyword">for</span> row <span class="code-keyword">in</span> matrix:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">for</span> element <span class="code-keyword">in</span> row:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(element, end=<span class="code-string">" "</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print()  <span class="code-comment"># New line after each row</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn6"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn6" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 6 of 10</div>
+        </div>
+
+        <!-- Slide 7: The else Clause in Loops -->
+        <div class="slide" id="slide7">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay7">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">The else Clause in Loops</h1>
+                <p class="slide-subtitle">Executing code after loop completion</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Python allows an else clause after loops. The else block executes only if the loop completes normally (i.e., not terminated by a break statement).</p>
+                                    <p>This feature is unique to Python and can be useful for:</p>
+                                    <ul>
+                                        <li>Search operations (execute code if item not found)</li>
+                                        <li>Validation checks</li>
+                                        <li>Cleanup operations after loop completion</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Python Specific:</strong> The else clause with loops is a feature that's not commonly found in other programming languages.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Search for a number in a list</span><br>
+                                numbers = [1, 3, 5, 7, 9]<br>
+                                search_for = 6<br>
+                                <br>
+                                <span class="code-keyword">for</span> num <span class="code-keyword">in</span> numbers:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> num == search_for:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(f<span class="code-string">"Found {search_for}!"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span><br>
+                                <span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(f<span class="code-string">"{search_for} not found in the list"</span>)<br><br>
+                                
+                                <span class="code-comment"># Check if a number is prime</span><br>
+                                num = 11<br>
+                                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(2, num):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> num % i == 0:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(f<span class="code-string">"{num} is not prime"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span><br>
+                                <span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(f<span class="code-string">"{num} is prime"</span>)<br><br>
+                                
+                                <span class="code-comment"># With while loop</span><br>
+                                count = 0<br>
+                                <span class="code-keyword">while</span> count < 3:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(count)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;count += 1<br>
+                                <span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Loop completed successfully"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn7"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn7" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 7 of 10</div>
+        </div>
+
+        <!-- Slide 8: List Comprehensions -->
+        <div class="slide" id="slide8">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay8">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">List Comprehensions</h1>
+                <p class="slide-subtitle">Concise way to create lists</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>List comprehensions provide a concise way to create lists based on existing lists or other iterables. They often replace the need for explicit for loops when creating lists.</p>
+                                    <p>Basic syntax:</p>
+                                    <pre>[expression for item in iterable if condition]</pre>
+                                    
+                                    <p>Benefits of list comprehensions:</p>
+                                    <ul>
+                                        <li>More concise and readable</li>
+                                        <li>Often faster than equivalent for loops</li>
+                                        <li>Functional programming style</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Pythonic Code:</strong> List comprehensions are considered a "Pythonic" way to write code and are widely used in the Python community.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Create a list of squares using a for loop</span><br>
+                                squares = []<br>
+                                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(1, 6):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;squares.append(i**2)<br>
+                                print(squares)  <span class="code-comment"># [1, 4, 9, 16, 25]</span><br><br>
+                                
+                                <span class="code-comment"># Same result using list comprehension</span><br>
+                                squares = [i**2 <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(1, 6)]<br>
+                                print(squares)  <span class="code-comment"># [1, 4, 9, 16, 25]</span><br><br>
+                                
+                                <span class="code-comment"># List comprehension with condition</span><br>
+                                even_squares = [i**2 <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(1, 11) <span class="code-keyword">if</span> i % 2 == 0]<br>
+                                print(even_squares)  <span class="code-comment"># [4, 16, 36, 64, 100]</span><br><br>
+                                
+                                <span class="code-comment"># Nested list comprehensions</span><br>
+                                matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]<br>
+                                flattened = [num <span class="code-keyword">for</span> row <span class="code-keyword">in</span> matrix <span class="code-keyword">for</span> num <span class="code-keyword">in</span> row]<br>
+                                print(flattened)  <span class="code-comment"># [1, 2, 3, 4, 5, 6, 7, 8, 9]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn8"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn8" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 8 of 10</div>
+        </div>
+
+        <!-- Slide 9: Common Loop Patterns -->
+        <div class="slide" id="slide9">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay9">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Common Loop Patterns</h1>
+                <p class="slide-subtitle">Practical applications of loops</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Loops are used in many common programming patterns. Understanding these patterns will help you write more efficient and readable code.</p>
+                                    <p>Some common loop patterns include:</p>
+                                    <ul>
+                                        <li><strong>Accumulator pattern</strong> - Building up a value through iteration</li>
+                                        <li><strong>Search pattern</strong> - Looking for an item in a collection</li>
+                                        <li><strong>Counting pattern</strong> - Counting occurrences of items</li>
+                                        <li><strong>Filter pattern</strong> - Selecting items that meet certain criteria</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Accumulator pattern: sum of numbers</span><br>
+                                numbers = [1, 2, 3, 4, 5]<br>
+                                total = 0<br>
+                                <span class="code-keyword">for</span> num <span class="code-keyword">in</span> numbers:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;total += num<br>
+                                print(<span class="code-string">"Sum:"</span>, total)  <span class="code-comment"># 15</span><br><br>
+                                
+                                <span class="code-comment"># Search pattern: find first even number</span><br>
+                                numbers = [1, 3, 5, 8, 9]<br>
+                                <span class="code-keyword">for</span> num <span class="code-keyword">in</span> numbers:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> num % 2 == 0:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"First even number:"</span>, num)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span><br><br>
+                                
+                                <span class="code-comment"># Counting pattern: count vowels in a string</span><br>
+                                text = <span class="code-string">"Hello, World!"</span><br>
+                                vowels = <span class="code-string">"aeiou"</span><br>
+                                count = 0<br>
+                                <span class="code-keyword">for</span> char <span class="code-keyword">in</span> text.lower():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> char <span class="code-keyword">in</span> vowels:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count += 1<br>
+                                print(<span class="code-string">"Number of vowels:"</span>, count)  <span class="code-comment"># 3</span><br><br>
+                                
+                                <span class="code-comment"># Filter pattern: get positive numbers</span><br>
+                                numbers = [-2, 5, -8, 10, -3, 7]<br>
+                                positive_nums = []<br>
+                                <span class="code-keyword">for</span> num <span class="code-keyword">in</span> numbers:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> num > 0:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;positive_nums.append(num)<br>
+                                print(<span class="code-string">"Positive numbers:"</span>, positive_nums)  <span class="code-comment"># [5, 10, 7]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn9"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn9" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 9 of 10</div>
+        </div>
+
+        <!-- Slide 10: Review & Quiz -->
+        <div class="slide" id="slide10">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay10">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Review & Quiz</h1>
+                <p class="slide-subtitle">Test your knowledge of Python loops</p>
+            </div>
+            <div class="slide-content">
+                <div class="slide10-content">
+                    <div class="quiz-summary">
+                        <div class="python-mascot">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h2 class="quiz-title">Python Loops Quiz</h2>
+                        <p class="quiz-description">You've completed the Python Loops tutorial. Test your knowledge with our interactive quiz!</p>
+                    </div>
+                    
+                    <div class="quiz-main-content">
+                        <div class="key-takeaways">
+                            <h3>Key Takeaways</h3>
+                            <p>Loops are essential for automating repetitive tasks in Python. Mastering for and while loops, along with loop control statements, will make your code more efficient and readable.</p>
+                        </div>
+                        
+                        <button class="quiz-btn" onclick="startQuiz()">
+                            <i class="fas fa-play-circle"></i> Attempt Quiz Now
+                        </button>
+                        
+                        <p class="quiz-description">The quiz contains 10 questions covering all loop concepts we've learned.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn10"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn10" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 10 of 10</div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for slide navigation and functionality
+        let currentSlide = 1;
+        const totalSlides = 10;
+        let slideTimer;
+        let timeLeft = 60; // 60 seconds per slide
+        let timerActive = true;
+
+        // Initialize the presentation
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgressBar();
+            startTimer();
+            setupNavigation();
+            disableAllNextButtons();
+        });
+
+        // Disable all next buttons initially
+        function disableAllNextButtons() {
+            for (let i = 1; i <= totalSlides; i++) {
+                const nextBtn = document.getElementById(`nextBtn${i}`);
+                if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        // Enable next button for current slide
+        function enableNextButton() {
+            const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+            if (nextBtn) {
+                nextBtn.disabled = false;
+                // Update timer display to show completion
+                const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+                if (timerElement) {
+                    timerElement.textContent = '00:00';
+                    timerElement.className = 'timer-complete';
+                }
+            }
+        }
+
+        // Update progress bar based on current slide
+        function updateProgressBar() {
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            // Update all slide counters
+            document.querySelectorAll('.slide-counter').forEach(counter => {
+                counter.textContent = `Slide ${currentSlide} of ${totalSlides}`;
+            });
+        }
+
+        // Timer functionality for each slide
+        function startTimer() {
+            clearInterval(slideTimer);
+            timeLeft = 60;
+            updateTimerDisplay();
+            timerActive = true;
+            
+            // Reset timer display style
+            const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+            if (timerElement) {
+                timerElement.className = 'timer-warning';
+            }
+            
+            slideTimer = setInterval(function() {
+                if (timerActive) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(slideTimer);
+                        timerActive = false;
+                        enableNextButton();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Update timer display for current slide
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const timerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Update timer for current slide
+            const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+            if (timerElement) {
+                timerElement.textContent = timerText;
+                
+                // Change color when time is running low
+                if (timeLeft <= 10) {
+                    timerElement.style.color = 'var(--danger)';
+                } else if (timeLeft <= 30) {
+                    timerElement.style.color = 'var(--warning)';
+                }
+            }
+        }
+
+        // Navigation between slides
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide++;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateProgressBar();
+                startTimer();
+                
+                // Disable next button for the new slide
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide--;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateProgressBar();
+                startTimer();
+                
+                // Enable next button if returning to a completed slide
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn && timeLeft <= 0) {
+                    nextBtn.disabled = false;
+                } else if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        // Set up navigation buttons
+        function setupNavigation() {
+            // Next buttons
+            for (let i = 1; i <= totalSlides; i++) {
+                const nextBtn = document.getElementById(`nextBtn${i}`);
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', nextSlide);
+                }
+                
+                // Previous buttons (skip slide 1 as it doesn't have a previous button)
+                if (i > 1) {
+                    const prevBtn = document.getElementById(`prevBtn${i}`);
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', prevSlide);
+                    }
+                }
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                // Only allow navigation if timer has completed
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn && !nextBtn.disabled) {
+                    nextSlide();
+                }
+            } else if (event.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Quiz function - redirect to quiz page
+        function startQuiz() {
+            // In a real application, this would redirect to a quiz page
+            // For demonstration, we'll show an alert
+            alert('Redirecting to the quiz page! In a real application, this would take you to the quiz.');
+            
+            // Uncomment the line below for actual redirection
+            // window.location.href = 'quiz.html';
+        }
+    </script>
+</body>
+</html>

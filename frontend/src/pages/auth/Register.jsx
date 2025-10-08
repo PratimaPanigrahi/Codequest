@@ -1,4 +1,3 @@
-// src/pages/auth/Register.jsx
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
@@ -15,17 +14,25 @@ const Register = () => {
 
   // Redirect after successful registration/login
   useEffect(() => {
-    if (isAuthenticated) navigate("/userhome");
+    if (isAuthenticated) {
+      navigate("/userhome", { replace: true }); // replace to prevent back navigation
+    }
   }, [isAuthenticated, navigate]);
 
-// Redirect if logged in
-useEffect(() => {
-  if (isAuthenticated) {
-    // replace: true ensures /login is replaced in history
-    navigate("/userhome", { replace: true });
-  }
-}, [isAuthenticated, navigate]);
+  // Handle back button on Register page
+  useEffect(() => {
+    const handlePopState = () => {
+      navigate("/", { replace: true }); // go to PublicHome on back
+    };
 
+    if (!isAuthenticated) {
+      window.addEventListener("popstate", handlePopState);
+    }
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [isAuthenticated, navigate]);
 
   // Show backend error
   useEffect(() => {

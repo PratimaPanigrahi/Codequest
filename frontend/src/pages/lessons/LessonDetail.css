@@ -1,0 +1,47 @@
+.lesson-detail {
+  padding: 1rem;
+}
+
+.start-btn,
+.quiz-btn {
+  padding: 0.5rem 1rem;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.start-btn {
+  background: #007bff;
+  color: white;
+}
+
+.quiz-btn {
+  margin-top: 1rem;
+  background: #28a745;
+  color: white;
+}
+
+.quiz-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.lesson-iframe {
+  width: 100%;
+  height: 600px;
+  border: none;
+  margin-top: 1rem;
+}
+
+.timer-text {
+  margin-top: 0.5rem;
+  font-weight: bold;
+  color: #d9534f;
+}
+
+.progress-text {
+  margin-top: 0.5rem;
+  font-style: italic;
+  color: #555;
+}

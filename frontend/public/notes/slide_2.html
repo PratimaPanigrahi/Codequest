@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Programming - Working with Data Types</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* All your existing CSS styles remain the same */
+        :root {
+            --primary: #306998;
+            --secondary: #FFD43B;
+            --accent: #4B8BBE;
+            --light: #f5f5f5;
+            --dark: #333;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: var(--dark);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .slide-container {
+            width: 90vw;
+            height: 85vh;
+            max-width: 1100px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: white;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.5s ease forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .slide-header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+            padding: 0 10px;
+            position: relative;
+            height: auto;
+        }
+        
+        .slide-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .slide-subtitle {
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 400;
+        }
+        
+        .slide-content {
+            width: 100%;
+            height: calc(100% - 140px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 0 10px;
+            overflow: hidden;
+            flex: 1;
+        }
+        
+        .content-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            overflow: hidden;
+            height: 100%;
+            flex: 1;
+        }
+        
+        .content-row {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            align-items: flex-start;
+            justify-content: center;
+            min-height: 0;
+            height: 100%;
+            flex: 1;
+        }
+        
+        .text-content {
+            flex: 1;
+            max-width: 500px;
+            min-height: 0;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .visual-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 400px;
+            min-height: 0;
+            height: 100%;
+        }
+        
+        .icon-large {
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+        
+        .section {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            width: 100%;
+            min-height: 0;
+            overflow: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-content {
+            line-height: 1.5;
+            font-size: 1rem;
+            min-height: 0;
+            overflow: auto;
+            flex: 1;
+        }
+        
+        .section-content ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        
+        .section-content li {
+            margin-bottom: 8px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .feature-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--accent);
+            transition: transform 0.3s;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .feature-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .feature-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+        
+        .applications-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .application-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .application-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 5px 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            width: 100%;
+            max-width: 400px;
+            overflow: auto;
+            max-height: 100%;
+        }
+        
+        .code-keyword {
+            color: #f92672;
+        }
+        
+        .code-function {
+            color: #66d9ef;
+        }
+        
+        .code-string {
+            color: #a6e22e;
+        }
+        
+        .code-comment {
+            color: #75715e;
+        }
+        
+        .nav-buttons {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding-left: 20px;
+            padding-right: 60px;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .slide-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--primary);
+            font-weight: bold;
+            background: rgba(255,255,255,0.8);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+        
+        .python-logo {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        
+        .history-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            position: relative;
+            width: 100%;
+        }
+        
+        .history-timeline::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+        }
+        
+        .timeline-item {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+        
+        .timeline-year {
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .reflection-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 15px;
+            width: 100%;
+            max-height: 200px;
+            overflow: hidden;
+        }
+        
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            gap: 15px;
+            width: 100%;
+            padding: 10px 0;
+            overflow: hidden;
+        }
+        
+        .quiz-icon {
+            font-size: 4rem;
+            color: var(--primary);
+        }
+        
+        .quiz-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .quiz-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .quiz-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-top: 10px;
+        }
+        
+        .quiz-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .fun-fact {
+            background: linear-gradient(135deg, var(--secondary) 0%, #FFE873 100%);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+            border-left: 4px solid var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .python-mascot {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary);
+        }
+        
+        .interactive-element {
+            background: var(--light);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .interactive-element:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .quote-box {
+            background: linear-gradient(135deg, var(--accent) 0%, #6BA3D6 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+            position: relative;
+            font-size: 0.9rem;
+        }
+        
+        .quote-box::before {
+            content: '"';
+            font-size: 3rem;
+            position: absolute;
+            top: -5px;
+            left: 8px;
+            opacity: 0.3;
+        }
+        
+        .slide-timer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 0 0 0 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+        }
+        
+        .data-type-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .data-type-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            border-top: 4px solid var(--primary);
+            transition: transform 0.3s;
+        }
+        
+        .data-type-item:hover {
+            transform: translateY(-5px);
+        }
+        
+        .data-type-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .data-type-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+        
+        /* Additional styles for better content management */
+        .scrollable-content {
+            overflow: auto;
+            max-height: 100%;
+            width: 100%;
+        }
+        
+        .compact-list {
+            padding-left: 15px;
+            margin: 5px 0;
+        }
+        
+        .compact-list li {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        /* Fix for Slide 8 - remove scrolling */
+        .no-scroll-section {
+            overflow: hidden !important;
+        }
+        
+        .no-scroll-section .section-content {
+            overflow: hidden !important;
+        }
+        
+        /* Quiz attempt button styles */
+        .quiz-attempt-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            overflow: hidden;
+        }
+        
+        /* Fix for Slide 10 - remove scrolling and adjust layout */
+        .slide10-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            padding: 10px 0;
+        }
+        
+        .quiz-summary {
+            text-align: center;
+            margin-bottom: 20px;
+            max-width: 700px;
+        }
+        
+        .quiz-main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            width: 100%;
+            max-width: 600px;
+            height: auto;
+            overflow: hidden;
+        }
+        
+        .key-takeaways {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 100%;
+            max-height: 150px;
+            overflow: hidden;
+        }
+        
+        .key-takeaways h3 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .key-takeaways p {
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        /* Timer warning style */
+        .timer-warning {
+            color: var(--warning);
+            font-weight: bold;
+        }
+        
+        .timer-complete {
+            color: var(--success);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>       
+
+        <!-- Slide 1: Introduction to Data Types -->
+        <div class="slide active" id="slide1">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay">Timer: <span class="timer-warning">01:00</span></div>
+                <div class="python-mascot">
+                    <i class="fas fa-database"></i>
+                </div>
+                <h1 class="slide-title">Working with Data Types</h1>
+                <p class="slide-subtitle">Understanding Python's built-in data types</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Data types are classifications that specify which type of value a variable can hold. Python has several built-in data types that are essential for programming.</p>
+                                    <p>Understanding data types is crucial because:</p>
+                                    <ul>
+                                        <li>Different operations work with different data types</li>
+                                        <li>Memory allocation depends on the data type</li>
+                                        <li>Type-specific methods are available for each data type</li>
+                                        <li>Python is dynamically typed, but type matters for operations</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Did you know?</strong> Python automatically determines the data type when you assign a value to a variable.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Python determines data types automatically</span><br>
+                                name = <span class="code-string">"Alice"</span>  <span class="code-comment"># str (string)</span><br>
+                                age = 25        <span class="code-comment"># int (integer)</span><br>
+                                height = 5.7    <span class="code-comment"># float (floating point)</span><br>
+                                is_student = True <span class="code-comment"># bool (boolean)</span><br><br>
+                                
+                                <span class="code-comment"># Check data type with type() function</span><br>
+                                print(<span class="code-keyword">type</span>(name))      <span class="code-comment"># &lt;class 'str'&gt;</span><br>
+                                print(<span class="code-keyword">type</span>(age))       <span class="code-comment"># &lt;class 'int'&gt;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn1" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 1 of 10</div>
+        </div>
+
+        <!-- Slide 2: Numeric Data Types -->
+        <div class="slide" id="slide2">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay2">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Numeric Data Types</h1>
+                <p class="slide-subtitle">Working with numbers in Python</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Python has three main numeric data types:</p>
+                                    <ul>
+                                        <li><strong>int</strong> - Integer numbers (whole numbers)</li>
+                                        <li><strong>float</strong> - Floating-point numbers (decimal numbers)</li>
+                                        <li><strong>complex</strong> - Complex numbers (real + imaginary parts)</li>
+                                    </ul>
+                                    <p>Python automatically handles the conversion between int and float when necessary.</p>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Python 3 Fact:</strong> There's no limit to how long an integer value can be, except for available memory.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Integer examples</span><br>
+                                x = 10<br>
+                                y = -5<br>
+                                z = 1000000<br><br>
+                                
+                                <span class="code-comment"># Float examples</span><br>
+                                a = 3.14<br>
+                                b = -2.5<br>
+                                c = 1.0<br><br>
+                                
+                                <span class="code-comment"># Complex examples</span><br>
+                                d = 3 + 4j<br>
+                                e = complex(2, -3)<br><br>
+                                
+                                <span class="code-comment"># Arithmetic operations</span><br>
+                                result1 = 10 + 3.5  <span class="code-comment"># Result is float: 13.5</span><br>
+                                result2 = 7 / 2     <span class="code-comment"># Result is float: 3.5</span><br>
+                                result3 = 7 // 2    <span class="code-comment"># Result is int: 3 (floor division)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn2"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn2" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 2 of 10</div>
+        </div>
+
+        <!-- Slide 3: Strings -->
+        <div class="slide" id="slide3">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay3">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Strings</h1>
+                <p class="slide-subtitle">Working with text in Python</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Strings are sequences of characters used to represent text. In Python, strings are immutable and can be defined using single, double, or triple quotes.</p>
+                                    <p>Key string features:</p>
+                                    <ul>
+                                        <li>Indexing and slicing operations</li>
+                                        <li>Multiple built-in methods for manipulation</li>
+                                        <li>Support for escape characters</li>
+                                        <li>String formatting capabilities</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Fun Fact:</strong> Python strings are immutable, meaning once created, they cannot be changed.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># String creation</span><br>
+                                s1 = <span class="code-string">"Hello"</span><br>
+                                s2 = <span class="code-string">'World'</span><br>
+                                s3 = <span class="code-string">'''Multi-line<br>string'''</span><br><br>
+                                
+                                <span class="code-comment"># String operations</span><br>
+                                greeting = s1 + <span class="code-string">" "</span> + s2  <span class="code-comment"># Concatenation</span><br>
+                                print(greeting[0])     <span class="code-comment"># Indexing: 'H'</span><br>
+                                print(greeting[0:5])   <span class="code-comment"># Slicing: 'Hello'</span><br><br>
+                                
+                                <span class="code-comment"># String methods</span><br>
+                                print(greeting.upper())<br>
+                                print(greeting.lower())<br>
+                                print(len(greeting))   <span class="code-comment"># Length: 11</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn3"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn3" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 3 of 10</div>
+        </div>
+
+        <!-- Continue with slides 4-9 with the same pattern -->
+        <!-- Slide 4: Lists -->
+        <div class="slide" id="slide4">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay4">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Lists</h1>
+                <p class="slide-subtitle">Ordered, mutable collections</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Lists are ordered, mutable collections that can hold items of different data types. They are one of Python's most versatile data structures.</p>
+                                    <p>List characteristics:</p>
+                                    <ul>
+                                        <li>Ordered collection of items</li>
+                                        <li>Mutable (can be changed after creation)</li>
+                                        <li>Can contain mixed data types</li>
+                                        <li>Support indexing and slicing</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Did you know?</strong> Lists in Python are similar to arrays in other languages but more flexible.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># List creation</span><br>
+                                fruits = [<span class="code-string">"apple"</span>, <span class="code-string">"banana"</span>, <span class="code-string">"cherry"</span>]<br>
+                                mixed_list = [1, <span class="code-string">"hello"</span>, 3.14, True]<br>
+                                numbers = list(range(1, 6))  <span class="code-comment"># [1, 2, 3, 4, 5]</span><br><br>
+                                
+                                <span class="code-comment"># List operations</span><br>
+                                fruits.append(<span class="code-string">"orange"</span>)  <span class="code-comment"># Add item</span><br>
+                                fruits[1] = <span class="code-string">"blueberry"</span>  <span class="code-comment"># Modify item</span><br>
+                                removed = fruits.pop()     <span class="code-comment"># Remove last item</span><br><br>
+                                
+                                <span class="code-comment"># List slicing</span><br>
+                                print(numbers[1:3])   <span class="code-comment"># [2, 3]</span><br>
+                                print(numbers[:3])    <span class="code-comment"># [1, 2, 3]</span><br>
+                                print(numbers[3:])    <span class="code-comment"># [4, 5]</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn4"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn4" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 4 of 10</div>
+        </div>
+
+        <!-- Slides 5-9 would follow the same pattern with disabled next buttons -->
+        <!-- ... -->
+
+        <!-- Slide 10: Review & Quiz -->
+        <div class="slide" id="slide10">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay10">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Review & Quiz</h1>
+                <p class="slide-subtitle">Test your knowledge of Python data types</p>
+            </div>
+            <div class="slide-content">
+                <div class="slide10-content">
+                    <div class="quiz-summary">
+                        <div class="python-mascot">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h2 class="quiz-title">Data Types Quiz</h2>
+                        <p class="quiz-description">You've completed the Python Data Types tutorial. Test your knowledge with our interactive quiz!</p>
+                    </div>
+                    
+                    <div class="quiz-main-content">
+                        <div class="key-takeaways">
+                            <h3>Key Takeaways</h3>
+                            <p>Python's data types are fundamental to writing effective code. Understanding when to use each type will make your programs more efficient and readable.</p>
+                        </div>
+                        
+                        <button class="quiz-btn" onclick="startQuiz()">
+                            <i class="fas fa-play-circle"></i> Attempt Quiz Now
+                        </button>
+                        
+                        <p class="quiz-description">The quiz contains 10 questions covering all data types we've learned.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn10"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn10" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 10 of 10</div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for slide navigation and functionality
+        let currentSlide = 1;
+        const totalSlides = 10;
+        let slideTimer;
+        let timeLeft = 60; // 60 seconds per slide
+        let timerActive = true;
+
+        // Initialize the presentation
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgressBar();
+            startTimer();
+            setupNavigation();
+            disableAllNextButtons();
+        });
+
+        // Disable all next buttons initially
+        function disableAllNextButtons() {
+            for (let i = 1; i <= totalSlides; i++) {
+                const nextBtn = document.getElementById(`nextBtn${i}`);
+                if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        // Enable next button for current slide
+        function enableNextButton() {
+            const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+            if (nextBtn) {
+                nextBtn.disabled = false;
+                // Update timer display to show completion
+                const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+                if (timerElement) {
+                    timerElement.textContent = '00:00';
+                    timerElement.className = 'timer-complete';
+                }
+            }
+        }
+
+        // Update progress bar based on current slide
+        function updateProgressBar() {
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            // Update all slide counters
+            document.querySelectorAll('.slide-counter').forEach(counter => {
+                counter.textContent = `Slide ${currentSlide} of ${totalSlides}`;
+            });
+        }
+
+        // Timer functionality for each slide
+        function startTimer() {
+            clearInterval(slideTimer);
+            timeLeft = 60;
+            updateTimerDisplay();
+            timerActive = true;
+            
+            // Reset timer display style
+            const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+            if (timerElement) {
+                timerElement.className = 'timer-warning';
+            }
+            
+            slideTimer = setInterval(function() {
+                if (timerActive) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(slideTimer);
+                        timerActive = false;
+                        enableNextButton();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Update timer display for current slide
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const timerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Update timer for current slide
+            const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+            if (timerElement) {
+                timerElement.textContent = timerText;
+                
+                // Change color when time is running low
+                if (timeLeft <= 10) {
+                    timerElement.style.color = 'var(--danger)';
+                } else if (timeLeft <= 30) {
+                    timerElement.style.color = 'var(--warning)';
+                }
+            }
+        }
+
+        // Navigation between slides
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide++;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateProgressBar();
+                startTimer();
+                
+                // Disable next button for the new slide
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide--;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateProgressBar();
+                startTimer();
+                
+                // Enable next button if returning to a completed slide
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn && timeLeft <= 0) {
+                    nextBtn.disabled = false;
+                } else if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        // Set up navigation buttons
+        function setupNavigation() {
+            // Next buttons
+            for (let i = 1; i <= totalSlides; i++) {
+                const nextBtn = document.getElementById(`nextBtn${i}`);
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', nextSlide);
+                }
+                
+                // Previous buttons (skip slide 1 as it doesn't have a previous button)
+                if (i > 1) {
+                    const prevBtn = document.getElementById(`prevBtn${i}`);
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', prevSlide);
+                    }
+                }
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                // Only allow navigation if timer has completed
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn && !nextBtn.disabled) {
+                    nextSlide();
+                }
+            } else if (event.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Quiz function - redirect to quiz page
+        function startQuiz() {
+            // In a real application, this would redirect to a quiz page
+            // For demonstration, we'll show an alert
+            alert('Redirecting to the quiz page! In a real application, this would take you to the quiz.');
+            
+            // Uncomment the line below for actual redirection
+            // window.location.href = 'quiz.html';
+        }
+    </script>
+</body>
+</html>

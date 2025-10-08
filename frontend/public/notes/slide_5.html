@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Programming - Modular Programming with Functions</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #306998;
+            --secondary: #FFD43B;
+            --accent: #4B8BBE;
+            --light: #f5f5f5;
+            --dark: #333;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: var(--dark);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .slide-container {
+            width: 90vw;
+            height: 85vh;
+            max-width: 1100px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: white;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.5s ease forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .slide-header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+            padding: 0 10px;
+            position: relative;
+            height: auto;
+        }
+        
+        .slide-title {
+            font-size: 1.8rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .slide-subtitle {
+            font-size: 1rem;
+            color: var(--accent);
+            font-weight: 400;
+        }
+        
+        .slide-content {
+            width: 100%;
+            height: calc(100% - 140px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 0 10px;
+            overflow: hidden;
+            flex: 1;
+        }
+        
+        .content-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            overflow: hidden;
+            height: 100%;
+            flex: 1;
+        }
+        
+        .content-row {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            align-items: flex-start;
+            justify-content: center;
+            min-height: 0;
+            height: 100%;
+            flex: 1;
+        }
+        
+        .text-content {
+            flex: 1;
+            max-width: 500px;
+            min-height: 0;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .visual-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 400px;
+            min-height: 0;
+            height: 100%;
+        }
+        
+        .icon-large {
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+        
+        .section {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            width: 100%;
+            min-height: 0;
+            overflow: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-content {
+            line-height: 1.4;
+            font-size: 0.95rem;
+            min-height: 0;
+            overflow: auto;
+            flex: 1;
+        }
+        
+        .section-content ul {
+            padding-left: 20px;
+            margin: 8px 0;
+        }
+        
+        .section-content li {
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 5px 0;
+            font-size: 0.85rem;
+            line-height: 1.3;
+            width: 100%;
+            max-width: 400px;
+            overflow: auto;
+            max-height: 100%;
+        }
+        
+        .code-keyword {
+            color: #f92672;
+        }
+        
+        .code-function {
+            color: #66d9ef;
+        }
+        
+        .code-string {
+            color: #a6e22e;
+        }
+        
+        .code-comment {
+            color: #75715e;
+        }
+        
+        .nav-buttons {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding-left: 20px;
+            padding-right: 60px;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .slide-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--primary);
+            font-weight: bold;
+            background: rgba(255,255,255,0.8);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+        
+        .python-logo {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        
+        .slide-timer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 0 0 0 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+        }
+        
+        .fun-fact {
+            background: linear-gradient(135deg, var(--secondary) 0%, #FFE873 100%);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            text-align: center;
+            font-style: italic;
+            border-left: 4px solid var(--primary);
+            font-size: 0.85rem;
+        }
+        
+        .python-mascot {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary);
+        }
+        
+        /* Additional styles for better content management */
+        .compact-list {
+            padding-left: 15px;
+            margin: 5px 0;
+        }
+        
+        .compact-list li {
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+        }
+        
+        /* Timer warning style */
+        .timer-warning {
+            color: var(--warning);
+            font-weight: bold;
+        }
+        
+        .timer-complete {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        /* Function-specific styles */
+        .function-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px 0;
+            width: 100%;
+        }
+        
+        .function-box {
+            background: var(--primary);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            width: 80%;
+            margin: 5px 0;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .arrow {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin: 5px 0;
+        }
+        
+        .parameter-list {
+            background: var(--light);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 10px 0;
+            width: 100%;
+        }
+        
+        .parameter-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #ddd;
+            font-size: 0.85rem;
+        }
+        
+        .parameter-item:last-child {
+            border-bottom: none;
+        }
+        
+        /* Content-specific adjustments */
+        .content-centered {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            width: 100%;
+        }
+        
+        .content-centered p {
+            margin-bottom: 15px;
+            max-width: 800px;
+        }
+        
+        .content-centered ul {
+            text-align: left;
+            max-width: 700px;
+        }
+        
+        .content-centered .code-block {
+            max-width: 600px;
+        }
+        
+        .highlight-box {
+            background: var(--secondary);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .two-columns {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .full-width {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+            font-size: 0.9rem;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>       
+
+        <!-- Slide 1: Introduction to Functions -->
+        <div class="slide active" id="slide1">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay">Timer: <span class="timer-warning">01:00</span></div>
+                <div class="python-mascot">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h1 class="slide-title">Modular Programming with Functions</h1>
+                <p class="slide-subtitle">Organizing code into reusable blocks</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Functions are blocks of organized, reusable code that perform a single, related action. They help break your program into smaller, manageable pieces.</p>
+                                    <p>Why use functions?</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Code Reusability:</strong> Write once, use many times</li>
+                                        <li><strong>Modularity:</strong> Break complex problems into smaller parts</li>
+                                        <li><strong>Maintainability:</strong> Easier to debug and modify</li>
+                                        <li><strong>Abstraction:</strong> Hide implementation details</li>
+                                    </ul>
+                                    
+                                    <div class="function-diagram">
+                                        <div class="function-box">Input (Parameters)</div>
+                                        <div class="arrow">↓</div>
+                                        <div class="function-box">Function Body</div>
+                                        <div class="arrow">↓</div>
+                                        <div class="function-box">Output (Return Value)</div>
+                                    </div>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Did you know?</strong> Python comes with many built-in functions like print(), len(), and type() that you've already been using!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Function definition</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">greet</span>():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Function body</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Hello, welcome to Python!"</span>)<br><br>
+                                
+                                <span class="code-comment"># Function call</span><br>
+                                greet()  <span class="code-comment"># Output: Hello, welcome to Python!</span><br><br>
+                                
+                                <span class="code-comment"># Calling the function multiple times</span><br>
+                                greet()<br>
+                                greet()<br>
+                                greet()
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn1" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 1 of 10</div>
+        </div>
+
+        <!-- Slide 2: Function Arguments and Parameters -->
+        <div class="slide" id="slide2">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay2">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Function Arguments and Parameters</h1>
+                <p class="slide-subtitle">Passing data to functions</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Parameters are variables listed in the function definition. Arguments are the actual values passed to the function when it's called.</p>
+                                    
+                                    <div class="parameter-list">
+                                        <div class="parameter-item">
+                                            <span><strong>Parameter Types:</strong></span>
+                                        </div>
+                                        <div class="parameter-item">
+                                            <span>Required parameters</span>
+                                            <span>Must be passed in correct order</span>
+                                        </div>
+                                        <div class="parameter-item">
+                                            <span>Keyword arguments</span>
+                                            <span>Passed by parameter name</span>
+                                        </div>
+                                        <div class="parameter-item">
+                                            <span>Default parameters</span>
+                                            <span>Have a default value</span>
+                                        </div>
+                                        <div class="parameter-item">
+                                            <span>Variable-length</span>
+                                            <span>Accept multiple values</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <p>Using parameters makes functions more flexible and reusable.</p>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Pro Tip:</strong> Use descriptive parameter names to make your code more readable and self-documenting.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Function with parameters</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">greet_person</span>(name, greeting=<span class="code-string">"Hello"</span>):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"</span>{greeting}<span class="code-string">, </span>{name}<span class="code-string">!"</span>)<br><br>
+                                
+                                <span class="code-comment"># Different ways to call the function</span><br>
+                                greet_person(<span class="code-string">"Alice"</span>)<br>
+                                <span class="code-comment"># Output: Hello, Alice!</span><br><br>
+                                
+                                greet_person(<span class="code-string">"Bob"</span>, <span class="code-string">"Hi"</span>)<br>
+                                <span class="code-comment"># Output: Hi, Bob!</span><br><br>
+                                
+                                greet_person(greeting=<span class="code-string">"Welcome"</span>, name=<span class="code-string">"Charlie"</span>)<br>
+                                <span class="code-comment"># Output: Welcome, Charlie!</span><br><br>
+                                
+                                <span class="code-comment"># Function with variable arguments</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">average</span>(*numbers):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> sum(numbers) / len(numbers)<br><br>
+                                
+                                print(average(10, 20, 30))  <span class="code-comment"># 20.0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn2"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn2" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 2 of 10</div>
+        </div>
+
+        <!-- Slide 3: Return Values -->
+        <div class="slide" id="slide3">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay3">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Return Values</h1>
+                <p class="slide-subtitle">Getting results from functions</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>The <code>return</code> statement is used to exit a function and send a value back to the caller. Functions without a return statement implicitly return <code>None</code>.</p>
+                                    
+                                    <p>Key points about return values:</p>
+                                    <ul class="compact-list">
+                                        <li>A function can return any data type</li>
+                                        <li>You can return multiple values as a tuple</li>
+                                        <li>The return statement immediately exits the function</li>
+                                        <li>Returned values can be stored in variables or used directly</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Python Feature:</strong> Functions can return multiple values at once, which are automatically packed into a tuple.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Function with return value</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">square</span>(number):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;result = number ** 2<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> result<br><br>
+                                
+                                <span class="code-comment"># Using the return value</span><br>
+                                x = square(5)<br>
+                                print(x)  <span class="code-comment"># 25</span><br><br>
+                                
+                                <span class="code-comment"># Function returning multiple values</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">calculate</span>(a, b):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;sum_result = a + b<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;product = a * b<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;difference = a - b<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> sum_result, product, difference<br><br>
+                                
+                                <span class="code-comment"># Unpacking returned values</span><br>
+                                s, p, d = calculate(10, 5)<br>
+                                print(<span class="code-string">f"Sum: </span>{s}<span class="code-string">, Product: </span>{p}<span class="code-string">, Difference: </span>{d}<span class="code-string">"</span>)<br>
+                                <span class="code-comment"># Output: Sum: 15, Product: 50, Difference: 5</span><br><br>
+                                
+                                <span class="code-comment"># Returning early from a function</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">is_even</span>(num):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> num % 2 == 0:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> True<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> False  <span class="code-comment"># Only reached if num is odd</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn3"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn3" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 3 of 10</div>
+        </div>
+
+        <!-- Slide 4: Scope and Lifetime -->
+        <div class="slide" id="slide4">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay4">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Variable Scope and Lifetime</h1>
+                <p class="slide-subtitle">Understanding where variables can be accessed</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Scope determines where a variable can be accessed. Lifetime is how long the variable exists in memory.</p>
+                                    
+                                    <p>Types of variable scope:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Local scope:</strong> Variables defined inside a function</li>
+                                        <li><strong>Enclosing scope:</strong> Variables in the local scope of enclosing functions</li>
+                                        <li><strong>Global scope:</strong> Variables defined at the module level</li>
+                                        <li><strong>Built-in scope:</strong> Predefined names in Python</li>
+                                    </ul>
+                                    
+                                    <div class="highlight-box">
+                                        <p><strong>LEGB Rule:</strong> Python follows the LEGB rule when looking up variables: Local → Enclosing → Global → Built-in</p>
+                                    </div>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Scope Tip:</strong> Use the <code>global</code> keyword to modify global variables inside functions, but use this sparingly as it can make code harder to understand.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Global variable</span><br>
+                                global_var = <span class="code-string">"I'm global"</span><br><br>
+                                
+                                <span class="code-keyword">def</span> <span class="code-function">my_function</span>():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Local variable</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;local_var = <span class="code-string">"I'm local"</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(local_var)  <span class="code-comment"># Works fine</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(global_var)  <span class="code-comment"># Can access global</span><br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">inner_function</span>():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inner_var = <span class="code-string">"I'm inner"</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(local_var)  <span class="code-comment"># Can access enclosing</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(global_var)  <span class="code-comment"># Can access global</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(inner_var)  <span class="code-comment"># Can access local</span><br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;inner_function()<br><br>
+                                
+                                my_function()<br>
+                                <span class="code-comment"># print(local_var)  # Error! local_var is not accessible here</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn4"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn4" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 4 of 10</div>
+        </div>
+
+        <!-- Slide 5: Lambda Functions -->
+        <div class="slide" id="slide5">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay5">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Lambda Functions</h1>
+                <p class="slide-subtitle">Anonymous functions for simple operations</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Lambda functions are small anonymous functions defined with the <code>lambda</code> keyword. They can have any number of arguments but only one expression.</p>
+                                    
+                                    <p>When to use lambda functions:</p>
+                                    <ul class="compact-list">
+                                        <li>For simple operations that can be expressed in a single expression</li>
+                                        <li>When you need a function for a short period of time</li>
+                                        <li>As arguments to higher-order functions like <code>map()</code>, <code>filter()</code>, and <code>sorted()</code></li>
+                                    </ul>
+                                    
+                                    <div class="highlight-box">
+                                        <p><strong>Note:</strong> While lambda functions are concise, regular functions with <code>def</code> are generally more readable for complex operations.</p>
+                                    </div>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Lambda Origin:</strong> The name "lambda" comes from lambda calculus, a formal system in mathematical logic and computer science.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Regular function</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">square</span>(x):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> x * x<br><br>
+                                
+                                <span class="code-comment"># Equivalent lambda function</span><br>
+                                square_lambda = <span class="code-keyword">lambda</span> x: x * x<br><br>
+                                
+                                print(square(5))        <span class="code-comment"># 25</span><br>
+                                print(square_lambda(5)) <span class="code-comment"># 25</span><br><br>
+                                
+                                <span class="code-comment"># Using lambda with map()</span><br>
+                                numbers = [1, 2, 3, 4, 5]<br>
+                                squared = list(map(<span class="code-keyword">lambda</span> x: x**2, numbers))<br>
+                                print(squared)  <span class="code-comment"># [1, 4, 9, 16, 25]</span><br><br>
+                                
+                                <span class="code-comment"># Using lambda with filter()</span><br>
+                                evens = list(filter(<span class="code-keyword">lambda</span> x: x % 2 == 0, numbers))<br>
+                                print(evens)  <span class="code-comment"># [2, 4]</span><br><br>
+                                
+                                <span class="code-comment"># Using lambda with sorted()</span><br>
+                                names = [<span class="code-string">"Alice"</span>, <span class="code-string">"Bob"</span>, <span class="code-string">"Charlie"</span>]<br>
+                                sorted_by_length = sorted(names, key=<span class="code-keyword">lambda</span> name: len(name))<br>
+                                print(sorted_by_length)  <span class="code-comment"># ['Bob', 'Alice', 'Charlie']</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn5"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn5" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 5 of 10</div>
+        </div>
+
+        <!-- Slide 6: Recursion -->
+        <div class="slide" id="slide6">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay6">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Recursive Functions</h1>
+                <p class="slide-subtitle">Functions that call themselves</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>A recursive function is a function that calls itself to solve a smaller version of the same problem. Recursion is a powerful technique for problems that can be broken down into similar subproblems.</p>
+                                    
+                                    <p>Key components of recursion:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Base case:</strong> The condition that stops the recursion</li>
+                                        <li><strong>Recursive case:</strong> The part where the function calls itself</li>
+                                        <li><strong>Progress toward base case:</strong> Each call should move closer to the base case</li>
+                                    </ul>
+                                    
+                                    <div class="highlight-box">
+                                        <p><strong>Caution:</strong> Without a proper base case, recursive functions can cause infinite recursion, leading to a stack overflow error.</p>
+                                    </div>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Recursion Limit:</strong> Python has a recursion limit (usually 1000) to prevent stack overflow. You can check it with <code>sys.getrecursionlimit()</code>.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Factorial using recursion</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">factorial</span>(n):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Base case</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> n == 0 <span class="code-keyword">or</span> n == 1:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> 1<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Recursive case</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> n * factorial(n - 1)<br><br>
+                                
+                                print(factorial(5))  <span class="code-comment"># 120</span><br><br>
+                                
+                                <span class="code-comment"># Fibonacci sequence using recursion</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">fibonacci</span>(n):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Base cases</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> n == 0:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> 0<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">elif</span> n == 1:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> 1<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Recursive case</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> fibonacci(n-1) + fibonacci(n-2)<br><br>
+                                
+                                <span class="code-comment"># First 10 Fibonacci numbers</span><br>
+                                <span class="code-keyword">for</span> i <span class="code-keyword">in</span> range(10):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(fibonacci(i), end=<span class="code-string">" "</span>)<br>
+                                <span class="code-comment"># Output: 0 1 1 2 3 5 8 13 21 34</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn6"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn6" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 6 of 10</div>
+        </div>
+
+        <!-- Slide 7: Built-in Functions -->
+        <div class="slide" id="slide7">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay7">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Built-in Functions</h1>
+                <p class="slide-subtitle">Python's ready-to-use functions</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Python comes with many built-in functions that are always available. These functions perform common operations and save you from writing code from scratch.</p>
+                                    
+                                    <p>Categories of built-in functions:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Mathematical:</strong> abs(), round(), min(), max(), sum()</li>
+                                        <li><strong>Type conversion:</strong> int(), float(), str(), list(), dict()</li>
+                                        <li><strong>Input/Output:</strong> print(), input(), open()</li>
+                                        <li><strong>Iteration:</strong> range(), len(), enumerate(), zip()</li>
+                                        <li><strong>Functional programming:</strong> map(), filter(), reduce()</li>
+                                    </ul>
+                                    
+                                    <div class="highlight-box">
+                                        <p><strong>Helpful Tip:</strong> Use the <code>help()</code> function to get information about any built-in function. For example: <code>help(print)</code></p>
+                                    </div>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Python Philosophy:</strong> Python includes "batteries included" philosophy, meaning it comes with a rich standard library of modules and functions.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Mathematical functions</span><br>
+                                numbers = [3, 1, 4, 1, 5, 9, 2]<br>
+                                print(<span class="code-string">"Min:"</span>, min(numbers))  <span class="code-comment"># 1</span><br>
+                                print(<span class="code-string">"Max:"</span>, max(numbers))  <span class="code-comment"># 9</span><br>
+                                print(<span class="code-string">"Sum:"</span>, sum(numbers))  <span class="code-comment"># 25</span><br>
+                                print(<span class="code-string">"Length:"</span>, len(numbers))  <span class="code-comment"># 7</span><br><br>
+                                
+                                <span class="code-comment"># Type conversion functions</span><br>
+                                num_str = <span class="code-string">"123"</span><br>
+                                num_int = int(num_str)<br>
+                                print(num_int, type(num_int))  <span class="code-comment"># 123 &lt;class 'int'&gt;</span><br><br>
+                                
+                                <span class="code-comment"># Using enumerate() for indexed iteration</span><br>
+                                fruits = [<span class="code-string">"apple"</span>, <span class="code-string">"banana"</span>, <span class="code-string">"cherry"</span>]<br>
+                                <span class="code-keyword">for</span> index, fruit <span class="code-keyword">in</span> enumerate(fruits):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"</span>{index}<span class="code-string">: </span>{fruit}<span class="code-string">"</span>)<br>
+                                <span class="code-comment"># Output: 0: apple, 1: banana, 2: cherry</span><br><br>
+                                
+                                <span class="code-comment"># Using zip() to combine iterables</span><br>
+                                names = [<span class="code-string">"Alice"</span>, <span class="code-string">"Bob"</span>, <span class="code-string">"Charlie"</span>]<br>
+                                ages = [25, 30, 35]<br>
+                                <span class="code-keyword">for</span> name, age <span class="code-keyword">in</span> zip(names, ages):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"</span>{name}<span class="code-string"> is </span>{age}<span class="code-string"> years old"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn7"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn7" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 7 of 10</div>
+        </div>
+
+        <!-- Slide 8: Function Best Practices -->
+        <div class="slide" id="slide8">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay8">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Function Best Practices</h1>
+                <p class="slide-subtitle">Writing clean, maintainable functions</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Following best practices when writing functions makes your code more readable, maintainable, and less prone to errors.</p>
+                                    
+                                    <p>Key best practices:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Single Responsibility:</strong> Each function should do one thing well</li>
+                                        <li><strong>Descriptive Names:</strong> Use clear, descriptive function names</li>
+                                        <li><strong>Keep Functions Small:</strong> Shorter functions are easier to understand</li>
+                                        <li><strong>Use Docstrings:</strong> Document your functions with docstrings</li>
+                                        <li><strong>Avoid Side Effects:</strong> Functions should not modify external state unexpectedly</li>
+                                        <li><strong>Use Type Hints:</strong> Add type annotations for better code clarity</li>
+                                    </ul>
+                                    
+                                    <div class="highlight-box">
+                                        <p><strong>DRY Principle:</strong> Don't Repeat Yourself. If you find yourself writing the same code in multiple places, consider creating a function.</p>
+                                    </div>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>PEP 8:</strong> Python's style guide recommends using lowercase with underscores for function names (snake_case) and limiting lines to 79 characters.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Good function example</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">calculate_circle_area</span>(radius: float) -> float:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">"""Calculate the area of a circle.</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"></span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">Args:</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">    radius (float): The radius of the circle</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"></span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">Returns:</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">    float: The area of the circle</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment">"""</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;PI = 3.14159<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> PI * radius ** 2<br><br>
+                                
+                                <span class="code-comment"># Poor function example (too many responsibilities)</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">process_data_and_print</span>(data):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Processing data</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;processed = []<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">for</span> item <span class="code-keyword">in</span> data:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> item % 2 == 0:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processed.append(item * 2)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;processed.append(item * 3)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Printing results</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">for</span> i, value <span class="code-keyword">in</span> enumerate(processed):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Item </span>{i}<span class="code-string">: </span>{value}<span class="code-string">"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Returning processed data</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> processed
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn8"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn8" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 8 of 10</div>
+        </div>
+
+        <!-- Slide 9: Decorators -->
+        <div class="slide" id="slide9">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay9">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Decorators</h1>
+                <p class="slide-subtitle">Modifying function behavior without changing its code</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Decorators are a powerful Python feature that allows you to modify or extend the behavior of functions without permanently modifying the function itself.</p>
+                                    
+                                    <p>How decorators work:</p>
+                                    <ul class="compact-list">
+                                        <li>Decorators are functions that take another function as an argument</li>
+                                        <li>They add functionality to the existing function</li>
+                                        <li>They return a modified function or a new function</li>
+                                        <li>Applied using the @ symbol above a function definition</li>
+                                    </ul>
+                                    
+                                    <div class="highlight-box">
+                                        <p><strong>Common Uses:</strong> Logging, timing, access control, memoization (caching), and validation.</p>
+                                    </div>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Syntax Sugar:</strong> The @decorator syntax is just syntactic sugar for <code>my_function = decorator(my_function)</code>.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Simple decorator example</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">my_decorator</span>(func):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">wrapper</span>():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Something is happening before the function is called."</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;func()<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Something is happening after the function is called."</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> wrapper<br><br>
+                                
+                                @my_decorator<br>
+                                <span class="code-keyword">def</span> <span class="code-function">say_hello</span>():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Hello!"</span>)<br><br>
+                                
+                                say_hello()<br>
+                                <span class="code-comment"># Output:</span><br>
+                                <span class="code-comment"># Something is happening before the function is called.</span><br>
+                                <span class="code-comment"># Hello!</span><br>
+                                <span class="code-comment"># Something is happening after the function is called.</span><br><br>
+                                
+                                <span class="code-comment"># Decorator with parameters</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">repeat</span>(num_times):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">decorator_repeat</span>(func):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">def</span> <span class="code-function">wrapper</span>(*args, **kwargs):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">for</span> _ <span class="code-keyword">in</span> range(num_times):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;func(*args, **kwargs)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> wrapper<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> decorator_repeat<br><br>
+                                
+                                @repeat(num_times=3)<br>
+                                <span class="code-keyword">def</span> <span class="code-function">greet</span>(name):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Hello </span>{name}<span class="code-string">!"</span>)<br><br>
+                                
+                                greet(<span class="code-string">"Alice"</span>)<br>
+                                <span class="code-comment"># Output: Hello Alice! (repeated 3 times)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn9"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn9" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 9 of 10</div>
+        </div>
+
+        <!-- Slide 10: Summary and Next Steps -->
+        <div class="slide" id="slide10">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay10">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Summary and Next Steps</h1>
+                <p class="slide-subtitle">What we've learned about Python functions</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-centered">
+                        <div class="section">
+                            <div class="section-content">
+                                <p>In this presentation, we've covered the fundamentals of Python functions:</p>
+                                
+                                <ul class="compact-list">
+                                    <li>Functions help organize code into reusable, manageable blocks</li>
+                                    <li>Parameters and arguments allow data to be passed to functions</li>
+                                    <li>Return values allow functions to send data back to the caller</li>
+                                    <li>Variable scope determines where variables can be accessed</li>
+                                    <li>Lambda functions provide a concise way to write simple functions</li>
+                                    <li>Recursion allows functions to call themselves</li>
+                                    <li>Python includes many useful built-in functions</li>
+                                    <li>Following best practices makes functions more maintainable</li>
+                                    <li>Decorators modify function behavior without changing their code</li>
+                                </ul>
+                                
+                                <div class="highlight-box">
+                                    <p><strong>Next Steps:</strong> Practice writing functions, explore Python's standard library, learn about classes and object-oriented programming, and study more advanced function concepts like generators and closures.</p>
+                                </div>
+                                
+                                <div class="fun-fact">
+                                    <strong>Keep Learning:</strong> Functions are just the beginning! Python offers many more powerful features like list comprehensions, generators, context managers, and more.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn10"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 10 of 10</div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for slide navigation and functionality
+        let currentSlide = 1;
+        const totalSlides = 10;
+        let slideTimer;
+        let timeLeft = 60; // 60 seconds per slide
+        let timerActive = true;
+
+        // Initialize the presentation
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgressBar();
+            startTimer();
+            setupNavigation();
+            disableAllNextButtons();
+        });
+
+        // Disable all next buttons initially
+        function disableAllNextButtons() {
+            for (let i = 1; i <= totalSlides; i++) {
+                const nextBtn = document.getElementById(`nextBtn${i}`);
+                if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        // Enable next button for current slide
+        function enableNextButton() {
+            const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+            if (nextBtn) {
+                nextBtn.disabled = false;
+                // Update timer display to show completion
+                const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+                if (timerElement) {
+                    timerElement.textContent = '00:00';
+                    timerElement.className = 'timer-complete';
+                }
+            }
+        }
+
+        // Update progress bar based on current slide
+        function updateProgressBar() {
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            // Update all slide counters
+            document.querySelectorAll('.slide-counter').forEach(counter => {
+                counter.textContent = `Slide ${currentSlide} of ${totalSlides}`;
+            });
+        }
+
+        // Timer functionality for each slide
+        function startTimer() {
+            clearInterval(slideTimer);
+            timeLeft = 60;
+            updateTimerDisplay();
+            timerActive = true;
+            
+            // Reset timer display style
+            const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+            if (timerElement) {
+                timerElement.className = 'timer-warning';
+            }
+            
+            slideTimer = setInterval(function() {
+                if (timerActive) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(slideTimer);
+                        timerActive = false;
+                        enableNextButton();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Update timer display for current slide
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const timerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Update timer for current slide
+            const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+            if (timerElement) {
+                timerElement.textContent = timerText;
+                
+                // Change color when time is running low
+                if (timeLeft <= 10) {
+                    timerElement.style.color = 'var(--danger)';
+                } else if (timeLeft <= 30) {
+                    timerElement.style.color = 'var(--warning)';
+                }
+            }
+        }
+
+        // Navigation between slides
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide++;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateProgressBar();
+                startTimer();
+                
+                // Disable next button for the new slide
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide--;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateProgressBar();
+                startTimer();
+                
+                // Enable next button if returning to a completed slide
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn && timeLeft <= 0) {
+                    nextBtn.disabled = false;
+                } else if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        // Set up navigation buttons
+        function setupNavigation() {
+            // Next buttons
+            for (let i = 1; i <= totalSlides; i++) {
+                const nextBtn = document.getElementById(`nextBtn${i}`);
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', nextSlide);
+                }
+                
+                // Previous buttons (skip slide 1 as it doesn't have a previous button)
+                if (i > 1) {
+                    const prevBtn = document.getElementById(`prevBtn${i}`);
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', prevSlide);
+                    }
+                }
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                // Only allow navigation if timer has completed
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn && !nextBtn.disabled) {
+                    nextSlide();
+                }
+            } else if (event.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>

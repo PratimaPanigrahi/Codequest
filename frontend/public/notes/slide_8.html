@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Programming - Simple Text-Based Games</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #306998;
+            --secondary: #FFD43B;
+            --accent: #4B8BBE;
+            --light: #f5f5f5;
+            --dark: #333;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: var(--dark);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .slide-container {
+            width: 90vw;
+            height: 85vh;
+            max-width: 1100px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: white;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.5s ease forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .slide-header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+            padding: 0 10px;
+            position: relative;
+            height: auto;
+        }
+        
+        .slide-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .slide-subtitle {
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 400;
+        }
+        
+        .slide-content {
+            width: 100%;
+            height: calc(100% - 140px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 0 10px;
+            overflow: hidden;
+            flex: 1;
+        }
+        
+        .content-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            overflow: hidden;
+            height: 100%;
+            flex: 1;
+        }
+        
+        .content-row {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            align-items: flex-start;
+            justify-content: center;
+            min-height: 0;
+            height: 100%;
+            flex: 1;
+        }
+        
+        .text-content {
+            flex: 1;
+            max-width: 500px;
+            min-height: 0;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .visual-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 400px;
+            min-height: 0;
+            height: 100%;
+        }
+        
+        .icon-large {
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+        
+        .section {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            width: 100%;
+            min-height: 0;
+            overflow: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-content {
+            line-height: 1.5;
+            font-size: 1rem;
+            min-height: 0;
+            overflow: auto;
+            flex: 1;
+        }
+        
+        .section-content ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        
+        .section-content li {
+            margin-bottom: 8px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .feature-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--accent);
+            transition: transform 0.3s;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .feature-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .feature-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+        
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 5px 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            width: 100%;
+            max-width: 400px;
+            overflow: auto;
+            max-height: 100%;
+        }
+        
+        .code-keyword {
+            color: #f92672;
+        }
+        
+        .code-function {
+            color: #66d9ef;
+        }
+        
+        .code-string {
+            color: #a6e22e;
+        }
+        
+        .code-comment {
+            color: #75715e;
+        }
+        
+        .nav-buttons {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding-left: 20px;
+            padding-right: 60px;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .slide-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--primary);
+            font-weight: bold;
+            background: rgba(255,255,255,0.8);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+        
+        .python-logo {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        
+        .slide-timer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 0 0 0 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+        }
+        
+        .game-mascot {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary);
+        }
+        
+        .fun-fact {
+            background: linear-gradient(135deg, var(--secondary) 0%, #FFE873 100%);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+            border-left: 4px solid var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .compact-list {
+            padding-left: 15px;
+            margin: 5px 0;
+        }
+        
+        .compact-list li {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .game-example {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            width: 100%;
+            max-height: 150px;
+            overflow: hidden;
+            text-align: center;
+        }
+        
+        .game-example h3 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .game-example p {
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            gap: 15px;
+            width: 100%;
+            padding: 10px 0;
+            overflow: hidden;
+        }
+        
+        .quiz-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-top: 10px;
+        }
+        
+        .quiz-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .timer-warning {
+            color: var(--warning);
+            font-weight: bold;
+        }
+        
+        .timer-complete {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        /* Content fitting adjustments */
+        .no-scroll-section {
+            overflow: hidden !important;
+        }
+        
+        .no-scroll-section .section-content {
+            overflow: hidden !important;
+        }
+        
+        .content-fit {
+            max-height: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .content-fit .section {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .content-fit .section-content {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .content-fit .compact-list {
+            max-height: 100%;
+            overflow: hidden;
+        }
+        
+        .content-fit .code-block {
+            max-height: 100%;
+            overflow: auto;
+        }
+        
+        .mini-game {
+            background: var(--light);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .mini-game:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .quote-box {
+            background: linear-gradient(135deg, var(--accent) 0%, #6BA3D6 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+            position: relative;
+            font-size: 0.9rem;
+        }
+        
+        .quote-box::before {
+            content: '"';
+            font-size: 3rem;
+            position: absolute;
+            top: -5px;
+            left: 8px;
+            opacity: 0.3;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>       
+
+        <!-- Slide 1: Introduction to Text-Based Games -->
+        <div class="slide active" id="slide1">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay">Timer: <span class="timer-warning">01:00</span></div>
+                <div class="game-mascot">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <h1 class="slide-title">Simple Text-Based Games</h1>
+                <p class="slide-subtitle">Building interactive games with Python</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content content-fit">
+                            <div class="section no-scroll-section">
+                                <div class="section-content">
+                                    <p>Text-based games are interactive programs that use text for input and output. They're excellent for learning programming concepts.</p>
+                                    <p>Why build text-based games?</p>
+                                    <ul class="compact-list">
+                                        <li>Practice fundamental programming concepts</li>
+                                        <li>Learn user input handling</li>
+                                        <li>Understand game logic and flow control</li>
+                                        <li>Create interactive experiences without complex graphics</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Did you know?</strong> Some of the earliest computer games were text-based adventures like Colossal Cave Adventure (1976).
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content content-fit">
+                            <div class="code-block">
+                                <span class="code-comment"># Example of a simple text-based game structure</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">main</span>():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Welcome to the game!"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Game logic goes here</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;player_name = input(<span class="code-string">"Enter your name: "</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Hello, {player_name}! Let's play."</span>)<br><br>
+                                
+                                <span class="code-keyword">if</span> __name__ == <span class="code-string">"__main__"</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;main()
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn1" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 1 of 10</div>
+        </div>
+
+        <!-- Slide 2: Guess the Number Game -->
+        <div class="slide" id="slide2">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay2">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Guess the Number Game</h1>
+                <p class="slide-subtitle">Using loops and conditionals</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content content-fit">
+                            <div class="section no-scroll-section">
+                                <div class="section-content">
+                                    <p>The "Guess the Number" game is a classic that teaches:</p>
+                                    <ul class="compact-list">
+                                        <li>Random number generation</li>
+                                        <li>While loops for repeated attempts</li>
+                                        <li>Conditional statements for feedback</li>
+                                        <li>User input validation</li>
+                                    </ul>
+                                    
+                                    <div class="game-example">
+                                        <h3>Game Flow</h3>
+                                        <p>1. Computer selects a random number<br>
+                                        2. Player guesses the number<br>
+                                        3. Computer provides hints (too high/too low)<br>
+                                        4. Repeat until correct guess</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content content-fit">
+                            <div class="code-block">
+                                <span class="code-comment"># Guess the Number implementation</span><br>
+                                <span class="code-keyword">import</span> random<br><br>
+                                
+                                <span class="code-keyword">def</span> <span class="code-function">guess_number</span>():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;number = random.randint(1, 100)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;attempts = 0<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"I'm thinking of a number between 1 and 100."</span>)<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">while</span> True:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;guess = int(input(<span class="code-string">"Your guess: "</span>))<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attempts += 1<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> guess < number:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Too low!"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">elif</span> guess > number:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Too high!"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Correct! You guessed it in {attempts} attempts."</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn2"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn2" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 2 of 10</div>
+        </div>
+
+        <!-- Slide 3: Quiz App -->
+        <div class="slide" id="slide3">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay3">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Quiz Application</h1>
+                <p class="slide-subtitle">Using data structures for questions and answers</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content content-fit">
+                            <div class="section no-scroll-section">
+                                <div class="section-content">
+                                    <p>A quiz app demonstrates how to:</p>
+                                    <ul class="compact-list">
+                                        <li>Store data in lists and dictionaries</li>
+                                        <li>Iterate through questions</li>
+                                        <li>Track and display scores</li>
+                                        <li>Handle different question types</li>
+                                    </ul>
+                                    
+                                    <div class="game-example">
+                                        <h3>Quiz Structure</h3>
+                                        <p>1. Define questions and answers<br>
+                                        2. Present questions one by one<br>
+                                        3. Check answers and update score<br>
+                                        4. Display final results</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content content-fit">
+                            <div class="code-block">
+                                <span class="code-comment"># Simple Quiz Implementation</span><br>
+                                questions = [<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">"question"</span>: <span class="code-string">"What is the capital of France?"</span>,<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">"answer"</span>: <span class="code-string">"Paris"</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;},<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">"question"</span>: <span class="code-string">"Which planet is known as the Red Planet?"</span>,<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-string">"answer"</span>: <span class="code-string">"Mars"</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                                ]<br><br>
+                                
+                                score = 0<br><br>
+                                
+                                <span class="code-keyword">for</span> q <span class="code-keyword">in</span> questions:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(q[<span class="code-string">"question"</span>])<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;user_answer = input(<span class="code-string">"Your answer: "</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> user_answer.lower() == q[<span class="code-string">"answer"</span>].lower():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Correct!"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;score += 1<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Wrong! The answer was {q['answer']}"</span>)<br><br>
+                                
+                                print(<span class="code-string">f"Your final score: {score}/{len(questions)}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn3"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn3" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 3 of 10</div>
+        </div>
+
+        <!-- Slide 4: Choose Your Own Adventure -->
+        <div class="slide" id="slide4">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay4">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Choose Your Own Adventure</h1>
+                <p class="slide-subtitle">Using nested conditional statements</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content content-fit">
+                            <div class="section no-scroll-section">
+                                <div class="section-content">
+                                    <p>These games create branching narratives where player choices determine the story's direction.</p>
+                                    <p>Key concepts:</p>
+                                    <ul class="compact-list">
+                                        <li>Nested if-elif-else statements</li>
+                                        <li>Story branching and multiple endings</li>
+                                        <li>Player choice impact on narrative</li>
+                                        <li>Game state tracking</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Fun Fact:</strong> The "Choose Your Own Adventure" book series sold over 250 million copies worldwide.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content content-fit">
+                            <div class="code-block">
+                                <span class="code-comment"># Simple Adventure Game Structure</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">start_adventure</span>():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"You're in a forest. Do you go LEFT or RIGHT?"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;choice1 = input(<span class="code-string">"> "</span>).lower()<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> choice1 == <span class="code-string">"left"</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"You find a river. SWIM across or FOLLOW the river?"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choice2 = input(<span class="code-string">"> "</span>).lower()<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> choice2 == <span class="code-string">"swim"</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"You safely cross and find treasure! You win!"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"You get lost in the forest. Game over."</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"You encounter a bear! RUN or HIDE?"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;choice2 = input(<span class="code-string">"> "</span>).lower()<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> choice2 == <span class="code-string">"run"</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"You escape safely! You win!"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"The bear finds you. Game over."</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn4"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn4" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 4 of 10</div>
+        </div>
+
+        <!-- Slide 5: Game Enhancement Techniques -->
+        <div class="slide" id="slide5">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay5">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Enhancing Your Games</h1>
+                <p class="slide-subtitle">Adding features to improve gameplay</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content content-fit">
+                            <div class="section no-scroll-section">
+                                <div class="section-content">
+                                    <p>Make your games more engaging with these enhancements:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Difficulty levels:</strong> Adjust game parameters</li>
+                                        <li><strong>Score tracking:</strong> Save and display high scores</li>
+                                        <li><strong>Input validation:</strong> Handle incorrect inputs gracefully</li>
+                                        <li><strong>Replayability:</strong> Add play again option</li>
+                                        <li><strong>Visual elements:</strong> Use ASCII art or color</li>
+                                    </ul>
+                                    
+                                    <div class="game-example">
+                                        <h3>Enhanced Game Features</h3>
+                                        <p>• Multiple difficulty settings<br>
+                                        • Persistent high score tracking<br>
+                                        • Input error handling<br>
+                                        • Play again option<br>
+                                        • ASCII art for visual appeal</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content content-fit">
+                            <div class="code-block">
+                                <span class="code-comment"># Enhanced game with replay option</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">play_game</span>():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Game logic here</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Game completed!"</span>)<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Ask to play again</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;play_again = input(<span class="code-string">"Play again? (y/n): "</span>).lower()<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> play_again == <span class="code-string">"y"</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;play_game()<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Thanks for playing!"</span>)<br><br>
+                                
+                                <span class="code-comment"># Input validation example</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">get_valid_input</span>(prompt, valid_options):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">while</span> True:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user_input = input(prompt).lower()<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> user_input <span class="code-keyword">in</span> valid_options:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> user_input<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Please enter one of: {', '.join(valid_options)}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn5"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn5" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 5 of 10</div>
+        </div>
+
+        <!-- Slide 6: Combining Game Concepts -->
+        <div class="slide" id="slide6">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay6">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Combining Game Concepts</h1>
+                <p class="slide-subtitle">Creating more complex games</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content content-fit">
+                            <div class="section no-scroll-section">
+                                <div class="section-content">
+                                    <p>Combine different game mechanics to create more engaging experiences:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Adventure + Quiz:</strong> Answer questions to progress</li>
+                                        <li><strong>Number guessing + Story:</strong> Guess numbers to unlock story elements</li>
+                                        <li><strong>Multiple mini-games:</strong> Create a game hub with different options</li>
+                                        <li><strong>Progressive difficulty:</strong> Increase challenge as player advances</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Game Design Tip:</strong> The best games often combine simple mechanics in interesting ways rather than relying on one complex system.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content content-fit">
+                            <div class="code-block">
+                                <span class="code-comment"># Combined game example structure</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">game_hub</span>():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Welcome to the Game Hub!"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"1. Guess the Number"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"2. Quiz Game"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"3. Adventure Game"</span>)<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;choice = input(<span class="code-string">"Select a game (1-3): "</span>)<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> choice == <span class="code-string">"1"</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;guess_number_game()<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">elif</span> choice == <span class="code-string">"2"</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;quiz_game()<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">elif</span> choice == <span class="code-string">"3"</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;adventure_game()<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Invalid choice!"</span>)<br><br>
+                                
+                                <span class="code-comment"># Return to hub after game completion</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;game_hub()
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn6"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn6" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 6 of 10</div>
+        </div>
+
+        <!-- Slide 7: Best Practices -->
+        <div class="slide" id="slide7">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay7">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Game Development Best Practices</h1>
+                <p class="slide-subtitle">Writing clean, maintainable game code</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content content-fit">
+                            <div class="section no-scroll-section">
+                                <div class="section-content">
+                                    <p>Follow these practices to create better games:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Modular design:</strong> Break code into functions</li>
+                                        <li><strong>Clear variable names:</strong> Use descriptive names</li>
+                                        <li><strong>Comment your code:</strong> Explain complex logic</li>
+                                        <li><strong>Error handling:</strong> Plan for user mistakes</li>
+                                        <li><strong>Testing:</strong> Test each part of your game</li>
+                                        <li><strong>User experience:</strong> Make games intuitive to play</li>
+                                    </ul>
+                                    
+                                    <div class="game-example">
+                                        <h3>Code Organization Tips</h3>
+                                        <p>• Separate game logic into functions<br>
+                                        • Use constants for game settings<br>
+                                        • Create reusable utility functions<br>
+                                        • Document function purposes</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content content-fit">
+                            <div class="code-block">
+                                <span class="code-comment"># Well-organized game structure</span><br>
+                                <span class="code-comment"># Constants</span><br>
+                                MAX_ATTEMPTS = 10<br>
+                                MIN_NUMBER = 1<br>
+                                MAX_NUMBER = 100<br><br>
+                                
+                                <span class="code-comment"># Game functions</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">display_welcome</span>():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"=== Number Guessing Game ==="</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Guess a number between {MIN_NUMBER} and {MAX_NUMBER}"</span>)<br><br>
+                                
+                                <span class="code-keyword">def</span> <span class="code-function">get_user_guess</span>():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">while</span> True:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">try</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;guess = int(input(<span class="code-string">"Your guess: "</span>))<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> MIN_NUMBER <= guess <= MAX_NUMBER:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> guess<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Please enter a number between {MIN_NUMBER} and {MAX_NUMBER}"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">except</span> ValueError:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Please enter a valid number!"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn7"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn7" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 7 of 10</div>
+        </div>
+
+        <!-- Slide 8: Interactive Elements -->
+        <div class="slide" id="slide8">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay8">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Adding Interactive Elements</h1>
+                <p class="slide-subtitle">Making games more engaging</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content content-fit">
+                            <div class="section no-scroll-section">
+                                <div class="section-content">
+                                    <p>Enhance player engagement with these interactive elements:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Timed challenges:</strong> Add time pressure</li>
+                                        <li><strong>Progressive storytelling:</strong> Unlock story elements</li>
+                                        <li><strong>Character progression:</strong> Level up systems</li>
+                                        <li><strong>Random events:</strong> Unexpected surprises</li>
+                                        <li><strong>Multiple endings:</strong> Reward different playstyles</li>
+                                    </ul>
+                                    
+                                    <div class="quote-box">
+                                        "The key to a great text-based game is imagination. Your words paint the pictures that graphics would otherwise provide."
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content content-fit">
+                            <div class="code-block">
+                                <span class="code-comment"># Example: Timed challenge</span><br>
+                                <span class="code-keyword">import</span> time<br><br>
+                                
+                                <span class="code-keyword">def</span> <span class="code-function">timed_quiz</span>():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;questions = [<span class="code-string">"Q1"</span>, <span class="code-string">"Q2"</span>, <span class="code-string">"Q3"</span>]<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;time_limit = 30  <span class="code-comment"># 30 seconds</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;start_time = time.time()<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">for</span> i, question <span class="code-keyword">in</span> enumerate(questions):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elapsed = time.time() - start_time<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;time_left = time_limit - elapsed<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> time_left <= 0:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Time's up!"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Time left: {int(time_left)}s"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(question)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;answer = input(<span class="code-string">"Answer: "</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># Process answer...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn8"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn8" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 8 of 10</div>
+        </div>
+
+        <!-- Slide 9: Debugging and Testing -->
+        <div class="slide" id="slide9">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay9">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Debugging and Testing Games</h1>
+                <p class="slide-subtitle">Finding and fixing issues in your code</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content content-fit">
+                            <div class="section no-scroll-section">
+                                <div class="section-content">
+                                    <p>Effective debugging strategies for game development:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Print debugging:</strong> Use print statements to track values</li>
+                                        <li><strong>Step-through execution:</strong> Trace through your code line by line</li>
+                                        <li><strong>Test edge cases:</strong> Check boundary conditions</li>
+                                        <li><strong>User testing:</strong> Have others play your game</li>
+                                        <li><strong>Error handling:</strong> Anticipate and manage potential errors</li>
+                                    </ul>
+                                    
+                                    <div class="game-example">
+                                        <h3>Common Game Bugs</h3>
+                                        <p>• Infinite loops<br>
+                                        • Incorrect condition checks<br>
+                                        • Off-by-one errors<br>
+                                        • Input handling issues<br>
+                                        • Logic flow problems</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content content-fit">
+                            <div class="code-block">
+                                <span class="code-comment"># Debugging example with print statements</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">debug_game</span>():<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;secret_number = 42<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;attempts = 0<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;max_attempts = 5<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"DEBUG: Secret number is {secret_number}"</span>)<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">while</span> attempts < max_attempts:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"DEBUG: Attempt {attempts + 1} of {max_attempts}"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;guess = int(input(<span class="code-string">"Guess: "</span>))<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"DEBUG: User guessed {guess}"</span>)<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> guess == secret_number:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Correct!"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">break</span><br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">elif</span> guess < secret_number:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Too low"</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Too high"</span>)<br><br>
+                                
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;attempts += 1<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"DEBUG: Attempts counter: {attempts}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn9"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn9" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 9 of 10</div>
+        </div>
+
+        <!-- Slide 10: Review & Next Steps -->
+        <div class="slide" id="slide10">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay10">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Review & Next Steps</h1>
+                <p class="slide-subtitle">What you've learned and where to go next</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="quiz-container">
+                        <div class="game-mascot">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h2 class="slide-title">Congratulations!</h2>
+                        <p class="slide-subtitle">You've learned how to create text-based games in Python</p>
+                        
+                        <div class="game-example">
+                            <h3>Key Takeaways</h3>
+                            <p>• Text-based games are excellent for learning programming fundamentals<br>
+                            • Python's simple syntax makes game development accessible<br>
+                            • You can create engaging experiences with just text and logic<br>
+                            • Practice is key to improving your game development skills</p>
+                        </div>
+                        
+                        <div class="game-example">
+                            <h3>Next Steps</h3>
+                            <p>• Try creating your own game variations<br>
+                            • Explore Python libraries like Pygame for graphical games<br>
+                            • Learn about object-oriented programming for more complex games<br>
+                            • Join online communities to share your creations</p>
+                        </div>
+                        
+                        <button class="quiz-btn" onclick="startCoding()">
+                            <i class="fas fa-code"></i> Start Coding Your Game!
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn10"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn10" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 10 of 10</div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for slide navigation and functionality
+        let currentSlide = 1;
+        const totalSlides = 10;
+        let slideTimer;
+        let timeLeft = 60; // 60 seconds per slide
+        let timerActive = true;
+
+        // Initialize the presentation
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgressBar();
+            startTimer();
+            setupNavigation();
+            disableAllNextButtons();
+        });
+
+        // Disable all next buttons initially
+        function disableAllNextButtons() {
+            for (let i = 1; i <= totalSlides; i++) {
+                const nextBtn = document.getElementById(`nextBtn${i}`);
+                if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        // Enable next button for current slide
+        function enableNextButton() {
+            const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+            if (nextBtn) {
+                nextBtn.disabled = false;
+                // Update timer display to show completion
+                const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+                if (timerElement) {
+                    timerElement.textContent = '00:00';
+                    timerElement.className = 'timer-complete';
+                }
+            }
+        }
+
+        // Update progress bar based on current slide
+        function updateProgressBar() {
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            // Update all slide counters
+            document.querySelectorAll('.slide-counter').forEach(counter => {
+                counter.textContent = `Slide ${currentSlide} of ${totalSlides}`;
+            });
+        }
+
+        // Timer functionality for each slide
+        function startTimer() {
+            clearInterval(slideTimer);
+            timeLeft = 60;
+            updateTimerDisplay();
+            timerActive = true;
+            
+            // Reset timer display style
+            const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+            if (timerElement) {
+                timerElement.className = 'timer-warning';
+            }
+            
+            slideTimer = setInterval(function() {
+                if (timerActive) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(slideTimer);
+                        timerActive = false;
+                        enableNextButton();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Update timer display for current slide
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const timerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Update timer for current slide
+            const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+            if (timerElement) {
+                timerElement.textContent = timerText;
+                
+                // Change color when time is running low
+                if (timeLeft <= 10) {
+                    timerElement.style.color = 'var(--danger)';
+                } else if (timeLeft <= 30) {
+                    timerElement.style.color = 'var(--warning)';
+                }
+            }
+        }
+
+        // Navigation between slides
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide++;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateProgressBar();
+                startTimer();
+                
+                // Disable next button for the new slide
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide--;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateProgressBar();
+                startTimer();
+                
+                // Enable next button if returning to a completed slide
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn && timeLeft <= 0) {
+                    nextBtn.disabled = false;
+                } else if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        // Set up navigation buttons
+        function setupNavigation() {
+            // Next buttons
+            for (let i = 1; i <= totalSlides; i++) {
+                const nextBtn = document.getElementById(`nextBtn${i}`);
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', nextSlide);
+                }
+                
+                // Previous buttons (skip slide 1 as it doesn't have a previous button)
+                if (i > 1) {
+                    const prevBtn = document.getElementById(`prevBtn${i}`);
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', prevSlide);
+                    }
+                }
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                // Only allow navigation if timer has completed
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn && !nextBtn.disabled) {
+                    nextSlide();
+                }
+            } else if (event.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Start coding function
+        function startCoding() {
+            alert('Time to start coding! Open your Python environment and begin creating your text-based game.');
+        }
+    </script>
+</body>
+</html>

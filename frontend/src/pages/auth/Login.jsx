@@ -1,35 +1,45 @@
-// src/pages/Login.jsx
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import { loginUser } from "../../store/authSlice";
 
-
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { loading, error, isAuthenticated } = useSelector((state) => state.auth);
+
+  // ✅ include user in destructuring
+  const { loading, error, isAuthenticated, user } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
 
-  // Redirect if logged in
+  // ✅ Redirect if logged in
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/userhome");
+    if (isAuthenticated && user) {
+      if (user.role === "admin") {
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        navigate("/userhome", { replace: true });
+      }
     }
+  }, [isAuthenticated, user, navigate]);
+
+  // Handle back button: redirect to PublicHome if on /login
+  useEffect(() => {
+    const handlePopState = () => {
+      navigate("/", { replace: true });
+    };
+
+    if (!isAuthenticated) {
+      window.addEventListener("popstate", handlePopState);
+    }
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
   }, [isAuthenticated, navigate]);
-
-  // Redirect if logged in
-useEffect(() => {
-  if (isAuthenticated) {
-    // replace: true ensures /login is replaced in history
-    navigate("/userhome", { replace: true });
-  }
-}, [isAuthenticated, navigate]);
-
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

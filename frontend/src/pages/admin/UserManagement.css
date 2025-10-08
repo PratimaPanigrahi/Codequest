@@ -1,0 +1,20 @@
+.user-management {
+  padding: 2rem;
+}
+
+.user-management table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.user-management th, td {
+  border: 1px solid #ddd;
+  padding: 0.8rem;
+  text-align: left;
+}
+
+.user-management th {
+  background-color: #1976d2;
+  color: white;
+}

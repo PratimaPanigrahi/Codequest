@@ -1,41 +1,34 @@
-// src/pages/UserHome.jsx
 import React from "react";
-import { useSelector } from "react-redux";
-import "./UserHome.css";
+import { useNavigate } from "react-router-dom";
 
 const UserHome = () => {
-  const { user } = useSelector((state) => state.auth) || {};
+  const navigate = useNavigate();
+  const difficulties = ["Beginner", "Intermediate", "Advanced"];
 
-  const levels = [
-    { title: "Beginner", description: "Start your coding journey with easy challenges." },
-    { title: "Intermediate", description: "Level up your skills with real projects." },
-    { title: "Hard", description: "Test your mastery with advanced challenges." },
-  ];
-
-  const handleLevelSelect = (level) => {
-    if (!user?.selectedCourse) {
-      alert("Please select a course first from the navbar!");
-      return;
-    }
-    alert(`You selected ${level} level for ${user.selectedCourse} course`);
-    // Here you can navigate to the actual game/lesson page
+  const handleCardClick = (difficulty) => {
+    navigate(`/lessons/${difficulty.toLowerCase()}`);
   };
 
   return (
     <div className="userhome-container">
-      <h1 className="welcome-text">Welcome, {user?.name || "User"}!</h1>
-      {user?.selectedCourse && (
-        <p className="selected-course">Selected Course: {user.selectedCourse}</p>
-      )}
-
-      <div className="level-cards">
-        {levels.map((level, index) => (
-          <div key={index} className="level-card">
-            <div className="level-card-content">
-              <h2>{level.title}</h2>
-              <p>{level.description}</p>
-              <button onClick={() => handleLevelSelect(level.title)}>Start</button>
-            </div>
+      <h1>Available Lessons</h1>
+      <div className="difficulty-cards">
+        {difficulties.map((diff) => (
+          <div
+            key={diff}
+            className="difficulty-card"
+            onClick={() => handleCardClick(diff)}
+            style={{
+              cursor: "pointer",
+              padding: "20px",
+              border: "1px solid #ccc",
+              marginBottom: "10px",
+              borderRadius: "8px",
+              textAlign: "center",
+              boxShadow: "0 2px 5px rgba(0,0,0,0.1)"
+            }}
+          >
+            <h2>{diff}</h2>
           </div>
         ))}
       </div>

@@ -1,0 +1,61 @@
+/* src/pages/lessons/LessonList.css */
+
+.lesson-list {
+  padding: 40px;
+  font-family: "Poppins", sans-serif;
+  text-align: center;
+  background-color: #f0f4f8;
+  min-height: 100vh;
+}
+
+.lesson-list h2 {
+  font-size: 2rem;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.levels {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+}
+
+.level-card {
+  background-color: #fff;
+  width: 220px;
+  height: 140px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+}
+
+.level-card.unlocked {
+  border: 2px solid #2575fc;
+}
+
+.level-card.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.level-card:hover.unlocked {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.level-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 8px;
+}
+
+.level-card p {
+  font-size: 0.9rem;
+  font-weight: 500;
+}

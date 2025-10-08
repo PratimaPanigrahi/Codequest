@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Control Flow: Conditionals</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #306998;
+            --secondary: #FFD43B;
+            --accent: #4B8BBE;
+            --light: #f5f5f5;
+            --dark: #333;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: var(--dark);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .slide-container {
+            width: 90vw;
+            height: 85vh;
+            max-width: 1100px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: white;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.5s ease forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .slide-header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+            padding: 0 10px;
+            position: relative;
+            height: auto;
+        }
+        
+        .slide-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .slide-subtitle {
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 400;
+        }
+        
+        .slide-content {
+            width: 100%;
+            height: calc(100% - 140px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 0 10px;
+            overflow: hidden;
+            flex: 1;
+        }
+        
+        .content-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            overflow: hidden;
+            height: 100%;
+            flex: 1;
+        }
+        
+        .content-row {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            align-items: flex-start;
+            justify-content: center;
+            min-height: 0;
+            height: 100%;
+            flex: 1;
+        }
+        
+        .text-content {
+            flex: 1;
+            max-width: 500px;
+            min-height: 0;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .visual-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 400px;
+            min-height: 0;
+            height: 100%;
+        }
+        
+        .icon-large {
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+        
+        .section {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            width: 100%;
+            min-height: 0;
+            overflow: hidden;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-content {
+            line-height: 1.5;
+            font-size: 1rem;
+            min-height: 0;
+            overflow: hidden;
+            flex: 1;
+        }
+        
+        .section-content ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        
+        .section-content li {
+            margin-bottom: 8px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .feature-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--accent);
+            transition: transform 0.3s;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .feature-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .feature-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+        
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 5px 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+            max-height: 100%;
+        }
+        
+        .code-keyword {
+            color: #f92672;
+        }
+        
+        .code-function {
+            color: #66d9ef;
+        }
+        
+        .code-string {
+            color: #a6e22e;
+        }
+        
+        .code-comment {
+            color: #75715e;
+        }
+        
+        .code-operator {
+            color: #f92672;
+        }
+        
+        .nav-buttons {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding-left: 20px;
+            padding-right: 60px;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+        
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .slide-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--primary);
+            font-weight: bold;
+            background: rgba(255,255,255,0.8);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+        
+        .python-mascot {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary);
+        }
+        
+        .fun-fact {
+            background: linear-gradient(135deg, var(--secondary) 0%, #FFE873 100%);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+            border-left: 4px solid var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .slide-timer {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--primary);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 0 0 0 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            z-index: 10;
+        }
+        
+        .timer-warning {
+            color: var(--warning);
+            font-weight: bold;
+        }
+        
+        .timer-complete {
+            color: var(--success);
+            font-weight: bold;
+        }
+        
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        
+        .comparison-table th, .comparison-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .comparison-table th {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .comparison-table tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        
+        .quiz-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-top: 10px;
+        }
+        
+        .quiz-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .key-takeaways {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 100%;
+            max-height: 150px;
+            overflow: hidden;
+        }
+        
+        .key-takeaways h3 {
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .key-takeaways p {
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        .quiz-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .quiz-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .compact-list {
+            padding-left: 15px;
+            margin: 5px 0;
+        }
+        
+        .compact-list li {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        /* Remove scrollbars */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* Adjust font sizes for better fit */
+        .slide-content {
+            font-size: 0.95rem;
+        }
+        
+        .section-content p {
+            margin-bottom: 10px;
+        }
+        
+        /* Ensure content fits without scrolling */
+        .content-fit {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            justify-content: space-between;
+        }
+        
+        .content-top {
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .content-bottom {
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>       
+
+        <!-- Slide 1: Introduction to Control Flow -->
+        <div class="slide active" id="slide1">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay">Timer: <span class="timer-warning">01:00</span></div>
+                <div class="python-mascot">
+                    <i class="fas fa-code-branch"></i>
+                </div>
+                <h1 class="slide-title">Control Flow: Conditionals</h1>
+                <p class="slide-subtitle">Making decisions in your Python programs</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section content-fit">
+                                <div class="section-content content-top">
+                                    <p>Control flow allows your program to make decisions and execute different code blocks based on conditions. Conditionals are the foundation of decision-making in programming.</p>
+                                    <p>In this lesson, you'll learn:</p>
+                                    <ul class="compact-list">
+                                        <li>How to use the <code>if</code> statement for single conditions</li>
+                                        <li>Using <code>if/else</code> for two possible outcomes</li>
+                                        <li>Handling multiple conditions with <code>elif</code></li>
+                                        <li>Nesting conditional statements for complex logic</li>
+                                    </ul>
+                                </div>
+                                <div class="content-bottom">
+                                    <div class="fun-fact">
+                                        <strong>Did you know?</strong> Conditional statements are also called "branching" because they create different paths (branches) for your code to follow.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Simple conditional example</span><br>
+                                temperature = 25<br><br>
+                                
+                                <span class="code-keyword">if</span> temperature > 30:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"It's a hot day!"</span>)<br>
+                                <span class="code-keyword">elif</span> temperature > 20:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"It's a pleasant day."</span>)<br>
+                                <span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"It's a bit chilly."</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn1" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 1 of 8</div>
+        </div>
+
+        <!-- Slide 2: The if Statement -->
+        <div class="slide" id="slide2">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay2">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">The if Statement</h1>
+                <p class="slide-subtitle">Make a decision based on a single condition</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section content-fit">
+                                <div class="section-content content-top">
+                                    <p>The <code>if</code> statement is the simplest form of conditional. It executes a block of code only if a condition is True.</p>
+                                    <p>Syntax:</p>
+                                    <div class="code-block" style="max-width: 100%; margin: 10px 0;">
+                                        <span class="code-keyword">if</span> condition:<br>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># code to execute if condition is True</span>
+                                    </div>
+                                    <p>Key points:</p>
+                                    <ul class="compact-list">
+                                        <li>The condition must evaluate to True or False</li>
+                                        <li>Code inside the if block is indented (usually 4 spaces)</li>
+                                        <li>If the condition is False, the code block is skipped</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Example 1: Simple if statement</span><br>
+                                age = 18<br><br>
+                                
+                                <span class="code-keyword">if</span> age >= 18:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"You are eligible to vote."</span>)<br><br>
+                                
+                                <span class="code-comment"># Example 2: Using comparison operators</span><br>
+                                score = 85<br><br>
+                                
+                                <span class="code-keyword">if</span> score > 80:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Great job! You passed with distinction."</span>)<br><br>
+                                
+                                <span class="code-comment"># Example 3: Checking if a value exists</span><br>
+                                name = <span class="code-string">"Alice"</span><br><br>
+                                
+                                <span class="code-keyword">if</span> name:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Hello, {name}!"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn2"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn2" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 2 of 8</div>
+        </div>
+
+        <!-- Slide 3: if/else Logic -->
+        <div class="slide" id="slide3">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay3">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">if/else Logic</h1>
+                <p class="slide-subtitle">Handle two possible outcomes based on a condition</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section content-fit">
+                                <div class="section-content content-top">
+                                    <p>The <code>if/else</code> statement allows you to specify two different code blocks: one to execute if the condition is True, and another if it's False.</p>
+                                    <p>Syntax:</p>
+                                    <div class="code-block" style="max-width: 100%; margin: 10px 0;">
+                                        <span class="code-keyword">if</span> condition:<br>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># code if condition is True</span><br>
+                                        <span class="code-keyword">else</span>:<br>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># code if condition is False</span>
+                                    </div>
+                                    <p>Key points:</p>
+                                    <ul class="compact-list">
+                                        <li>Exactly one of the two code blocks will execute</li>
+                                        <li>The else clause doesn't have a condition</li>
+                                        <li>This is useful for binary decisions (yes/no, true/false)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Example 1: Simple if/else</span><br>
+                                temperature = 25<br><br>
+                                
+                                <span class="code-keyword">if</span> temperature > 30:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"It's hot outside."</span>)<br>
+                                <span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"It's not too hot."</span>)<br><br>
+                                
+                                <span class="code-comment"># Example 2: Checking user access</span><br>
+                                is_logged_in = True<br><br>
+                                
+                                <span class="code-keyword">if</span> is_logged_in:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Welcome to your account!"</span>)<br>
+                                <span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Please log in to continue."</span>)<br><br>
+                                
+                                <span class="code-comment"># Example 3: Number parity check</span><br>
+                                number = 7<br><br>
+                                
+                                <span class="code-keyword">if</span> number % 2 == 0:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"{number} is even."</span>)<br>
+                                <span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"{number} is odd."</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn3"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn3" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 3 of 8</div>
+        </div>
+
+        <!-- Slide 4: elif for Multiple Conditions -->
+        <div class="slide" id="slide4">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay4">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">elif for Multiple Conditions</h1>
+                <p class="slide-subtitle">Handle multiple conditions and outcomes</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section content-fit">
+                                <div class="section-content content-top">
+                                    <p>The <code>elif</code> (else if) statement allows you to check multiple conditions in sequence. It's used after an <code>if</code> statement and before an optional <code>else</code>.</p>
+                                    <p>Syntax:</p>
+                                    <div class="code-block" style="max-width: 100%; margin: 10px 0;">
+                                        <span class="code-keyword">if</span> condition1:<br>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># code if condition1 is True</span><br>
+                                        <span class="code-keyword">elif</span> condition2:<br>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># code if condition2 is True</span><br>
+                                        <span class="code-keyword">else</span>:<br>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-comment"># code if all conditions are False</span>
+                                    </div>
+                                    <p>Key points:</p>
+                                    <ul class="compact-list">
+                                        <li>Conditions are checked in order from top to bottom</li>
+                                        <li>Only the first True condition's code block executes</li>
+                                        <li>You can have multiple <code>elif</code> statements</li>
+                                        <li>The <code>else</code> clause is optional</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Example 1: Grade classification</span><br>
+                                score = 85<br><br>
+                                
+                                <span class="code-keyword">if</span> score >= 90:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Grade: A"</span>)<br>
+                                <span class="code-keyword">elif</span> score >= 80:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Grade: B"</span>)<br>
+                                <span class="code-keyword">elif</span> score >= 70:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Grade: C"</span>)<br>
+                                <span class="code-keyword">elif</span> score >= 60:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Grade: D"</span>)<br>
+                                <span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Grade: F"</span>)<br><br>
+                                
+                                <span class="code-comment"># Example 2: Temperature ranges</span><br>
+                                temp = 22<br><br>
+                                
+                                <span class="code-keyword">if</span> temp > 30:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Hot"</span>)<br>
+                                <span class="code-keyword">elif</span> temp > 20:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Warm"</span>)<br>
+                                <span class="code-keyword">elif</span> temp > 10:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Cool"</span>)<br>
+                                <span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Cold"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn4"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn4" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 4 of 8</div>
+        </div>
+
+        <!-- Slide 5: Comparison Operators -->
+        <div class="slide" id="slide5">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay5">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Comparison Operators</h1>
+                <p class="slide-subtitle">Tools for creating conditions</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section content-fit">
+                                <div class="section-content content-top">
+                                    <p>Comparison operators are used to compare values and return True or False. They are essential for creating conditions in conditional statements.</p>
+                                    
+                                    <table class="comparison-table">
+                                        <tr>
+                                            <th>Operator</th>
+                                            <th>Description</th>
+                                            <th>Example</th>
+                                        </tr>
+                                        <tr>
+                                            <td>==</td>
+                                            <td>Equal to</td>
+                                            <td>5 == 5 → True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>!=</td>
+                                            <td>Not equal to</td>
+                                            <td>5 != 3 → True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&gt;</td>
+                                            <td>Greater than</td>
+                                            <td>5 &gt; 3 → True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&lt;</td>
+                                            <td>Less than</td>
+                                            <td>5 &lt; 3 → False</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&gt;=</td>
+                                            <td>Greater than or equal to</td>
+                                            <td>5 &gt;= 5 → True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>&lt;=</td>
+                                            <td>Less than or equal to</td>
+                                            <td>5 &lt;= 3 → False</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="content-bottom">
+                                    <div class="fun-fact">
+                                        <strong>Remember:</strong> The equality operator is <code>==</code> (double equals), not <code>=</code> (single equals) which is for assignment.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Examples of comparison operators</span><br>
+                                x = 10<br>
+                                y = 5<br><br>
+                                
+                                <span class="code-comment"># Equality check</span><br>
+                                <span class="code-keyword">if</span> x == 10:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"x is 10"</span>)<br><br>
+                                
+                                <span class="code-comment"># Inequality check</span><br>
+                                <span class="code-keyword">if</span> x != y:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"x and y are different"</span>)<br><br>
+                                
+                                <span class="code-comment"># Greater than</span><br>
+                                <span class="code-keyword">if</span> x > y:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"x is greater than y"</span>)<br><br>
+                                
+                                <span class="code-comment"># Less than or equal to</span><br>
+                                <span class="code-keyword">if</span> y <= 5:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"y is less than or equal to 5"</span>)<br><br>
+                                
+                                <span class="code-comment"># Combining conditions</span><br>
+                                <span class="code-keyword">if</span> x > 5 <span class="code-keyword">and</span> y < 10:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Both conditions are True"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn5"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn5" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 5 of 8</div>
+        </div>
+
+        <!-- Slide 6: Logical Operators -->
+        <div class="slide" id="slide6">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay6">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Logical Operators</h1>
+                <p class="slide-subtitle">Combining multiple conditions</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section content-fit">
+                                <div class="section-content content-top">
+                                    <p>Logical operators allow you to combine multiple conditions in a single statement.</p>
+                                    
+                                    <table class="comparison-table">
+                                        <tr>
+                                            <th>Operator</th>
+                                            <th>Description</th>
+                                            <th>Example</th>
+                                        </tr>
+                                        <tr>
+                                            <td>and</td>
+                                            <td>True if both conditions are True</td>
+                                            <td>(5 > 3) and (5 < 10) → True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>or</td>
+                                            <td>True if at least one condition is True</td>
+                                            <td>(5 > 3) or (5 < 2) → True</td>
+                                        </tr>
+                                        <tr>
+                                            <td>not</td>
+                                            <td>Reverses the result (True becomes False)</td>
+                                            <td>not(5 > 3) → False</td>
+                                        </tr>
+                                    </table>
+                                    
+                                    <p>Operator precedence (from highest to lowest):</p>
+                                    <ol class="compact-list">
+                                        <li><code>not</code></li>
+                                        <li><code>and</code></li>
+                                        <li><code>or</code></li>
+                                    </ol>
+                                </div>
+                                <div class="content-bottom">
+                                    <div class="fun-fact">
+                                        <strong>Tip:</strong> Use parentheses to make complex conditions clearer and to control evaluation order.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Examples of logical operators</span><br>
+                                age = 25<br>
+                                has_license = True<br><br>
+                                
+                                <span class="code-comment"># AND operator - both conditions must be True</span><br>
+                                <span class="code-keyword">if</span> age >= 18 <span class="code-keyword">and</span> has_license:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"You can drive a car."</span>)<br><br>
+                                
+                                <span class="code-comment"># OR operator - at least one condition must be True</span><br>
+                                is_weekend = False<br>
+                                is_holiday = True<br><br>
+                                
+                                <span class="code-keyword">if</span> is_weekend <span class="code-keyword">or</span> is_holiday:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"It's a day off!"</span>)<br><br>
+                                
+                                <span class="code-comment"># NOT operator - reverses the condition</span><br>
+                                is_raining = False<br><br>
+                                
+                                <span class="code-keyword">if</span> <span class="code-keyword">not</span> is_raining:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"You don't need an umbrella."</span>)<br><br>
+                                
+                                <span class="code-comment"># Combining multiple operators</span><br>
+                                temperature = 22<br>
+                                is_sunny = True<br><br>
+                                
+                                <span class="code-keyword">if</span> (temperature > 20 <span class="code-keyword">and</span> temperature < 30) <span class="code-keyword">and</span> is_sunny:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"Perfect weather for a walk!"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn6"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn6" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 6 of 8</div>
+        </div>
+
+        <!-- Slide 7: Best Practices -->
+        <div class="slide" id="slide7">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay7">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Best Practices</h1>
+                <p class="slide-subtitle">Writing clean and efficient conditional code</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section content-fit">
+                                <div class="section-content content-top">
+                                    <p>Follow these best practices to write clean, readable, and efficient conditional statements:</p>
+                                    <ul class="compact-list">
+                                        <li><strong>Keep conditions simple:</strong> Break complex conditions into smaller, named variables</li>
+                                        <li><strong>Use meaningful variable names:</strong> Makes conditions easier to understand</li>
+                                        <li><strong>Avoid deep nesting:</strong> Consider using early returns or separate functions</li>
+                                        <li><strong>Order conditions logically:</strong> Place most likely or important conditions first</li>
+                                        <li><strong>Use parentheses for clarity:</strong> Especially with complex logical expressions</li>
+                                    </ul>
+                                </div>
+                                <div class="content-bottom">
+                                    <div class="fun-fact">
+                                        <strong>Pythonic Tip:</strong> Python supports conditional expressions (ternary operator) for simple if/else assignments: <code>x = value1 if condition else value2</code>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># GOOD: Clear, readable conditions</span><br>
+                                age = 25<br>
+                                has_license = True<br>
+                                has_car = False<br><br>
+                                
+                                <span class="code-comment"># Use descriptive variable names for conditions</span><br>
+                                can_drive = age >= 18 <span class="code-keyword">and</span> has_license<br>
+                                needs_rental = can_drive <span class="code-keyword">and</span> <span class="code-keyword">not</span> has_car<br><br>
+                                
+                                <span class="code-keyword">if</span> can_drive:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">if</span> needs_rental:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"You can drive but need to rent a car."</span>)<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"You're all set to drive!"</span>)<br>
+                                <span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">"You cannot drive."</span>)<br><br>
+                                
+                                <span class="code-comment"># Using ternary operator for simple assignments</span><br>
+                                temperature = 25<br>
+                                weather_message = <span class="code-string">"Hot"</span> <span class="code-keyword">if</span> temperature > 30 <span class="code-keyword">else</span> <span class="code-string">"Comfortable"</span><br>
+                                print(weather_message)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn7"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn7" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 7 of 8</div>
+        </div>
+
+        <!-- Slide 8: Review & Quiz -->
+        <div class="slide" id="slide8">
+            <div class="slide-header">
+                <div class="slide-timer" id="slideTimerDisplay8">Timer: <span class="timer-warning">01:00</span></div>
+                <h1 class="slide-title">Review & Quiz</h1>
+                <p class="slide-subtitle">Test your knowledge of Python conditionals</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%;">
+                                    <div class="python-mascot">
+                                        <i class="fas fa-graduation-cap"></i>
+                                    </div>
+                                    <h2 class="quiz-title">Conditionals Quiz</h2>
+                                    <p class="quiz-description">You've completed the Python Conditionals tutorial. Test your knowledge with our interactive quiz!</p>
+                                    
+                                    <div class="key-takeaways" style="margin: 20px 0;">
+                                        <h3>Key Takeaways</h3>
+                                        <p>Conditionals allow your programs to make decisions. Mastering if, elif, and else statements along with comparison and logical operators is essential for writing effective Python code.</p>
+                                    </div>
+                                    
+                                    <button class="quiz-btn" onclick="startQuiz()">
+                                        <i class="fas fa-play-circle"></i> Attempt Quiz Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn" id="prevBtn8"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn8" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 8 of 8</div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for slide navigation and functionality
+        let currentSlide = 1;
+        const totalSlides = 8;
+        let slideTimer;
+        let timeLeft = 60; // 60 seconds per slide
+        let timerActive = true;
+
+        // Initialize the presentation
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgressBar();
+            startTimer();
+            setupNavigation();
+            disableAllNextButtons();
+        });
+
+        // Disable all next buttons initially
+        function disableAllNextButtons() {
+            for (let i = 1; i <= totalSlides; i++) {
+                const nextBtn = document.getElementById(`nextBtn${i}`);
+                if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        // Enable next button for current slide
+        function enableNextButton() {
+            const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+            if (nextBtn) {
+                nextBtn.disabled = false;
+                // Update timer display to show completion
+                const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+                if (timerElement) {
+                    timerElement.textContent = '00:00';
+                    timerElement.className = 'timer-complete';
+                }
+            }
+        }
+
+        // Update progress bar based on current slide
+        function updateProgressBar() {
+            const progress = (currentSlide / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = `${progress}%`;
+            
+            // Update all slide counters
+            document.querySelectorAll('.slide-counter').forEach(counter => {
+                counter.textContent = `Slide ${currentSlide} of ${totalSlides}`;
+            });
+        }
+
+        // Timer functionality for each slide
+        function startTimer() {
+            clearInterval(slideTimer);
+            timeLeft = 60;
+            updateTimerDisplay();
+            timerActive = true;
+            
+            // Reset timer display style
+            const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+            if (timerElement) {
+                timerElement.className = 'timer-warning';
+            }
+            
+            slideTimer = setInterval(function() {
+                if (timerActive) {
+                    timeLeft--;
+                    updateTimerDisplay();
+                    
+                    if (timeLeft <= 0) {
+                        clearInterval(slideTimer);
+                        timerActive = false;
+                        enableNextButton();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Update timer display for current slide
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const timerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Update timer for current slide
+            const timerElement = document.querySelector(`#slideTimerDisplay${currentSlide === 1 ? '' : currentSlide} span`);
+            if (timerElement) {
+                timerElement.textContent = timerText;
+                
+                // Change color when time is running low
+                if (timeLeft <= 10) {
+                    timerElement.style.color = 'var(--danger)';
+                } else if (timeLeft <= 30) {
+                    timerElement.style.color = 'var(--warning)';
+                }
+            }
+        }
+
+        // Navigation between slides
+        function nextSlide() {
+            if (currentSlide < totalSlides) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide++;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateProgressBar();
+                startTimer();
+                
+                // Disable next button for the new slide
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 1) {
+                document.getElementById(`slide${currentSlide}`).classList.remove('active');
+                currentSlide--;
+                document.getElementById(`slide${currentSlide}`).classList.add('active');
+                updateProgressBar();
+                startTimer();
+                
+                // Enable next button if returning to a completed slide
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn && timeLeft <= 0) {
+                    nextBtn.disabled = false;
+                } else if (nextBtn) {
+                    nextBtn.disabled = true;
+                }
+            }
+        }
+
+        // Set up navigation buttons
+        function setupNavigation() {
+            // Next buttons
+            for (let i = 1; i <= totalSlides; i++) {
+                const nextBtn = document.getElementById(`nextBtn${i}`);
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', nextSlide);
+                }
+                
+                // Previous buttons (skip slide 1 as it doesn't have a previous button)
+                if (i > 1) {
+                    const prevBtn = document.getElementById(`prevBtn${i}`);
+                    if (prevBtn) {
+                        prevBtn.addEventListener('click', prevSlide);
+                    }
+                }
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                // Only allow navigation if timer has completed
+                const nextBtn = document.getElementById(`nextBtn${currentSlide}`);
+                if (nextBtn && !nextBtn.disabled) {
+                    nextSlide();
+                }
+            } else if (event.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+
+        // Quiz function - redirect to quiz page
+        function startQuiz() {
+            // In a real application, this would redirect to a quiz page
+            // For demonstration, we'll show an alert
+            alert('Redirecting to the quiz page! In a real application, this would take you to the quiz.');
+            
+            // Uncomment the line below for actual redirection
+            // window.location.href = 'quiz.html';
+        }
+    </script>
+</body>
+</html>

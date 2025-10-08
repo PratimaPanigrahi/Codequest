@@ -1,172 +1,200 @@
 // src/pages/progress/ProgressDashboard.jsx
-import React, { useEffect, useState } from "react";
-import { FaCoins, FaClock, FaChartLine, FaFire } from "react-icons/fa";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar, CartesianGrid, Legend } from "recharts";
-import api from "../../api/axios.js";
+import React from "react";
+import { useSelector } from "react-redux";
+import { FaCoins, FaChartLine, FaFire, FaTrophy, FaBook, FaGamepad } from "react-icons/fa";
 import "./ProgressDashboard.css";
 
+// ✅ Import ProgressChart component
+import ProgressChart from "../../components/charts/ProgressChart";
+
 const ProgressDashboard = () => {
-  const [stats, setStats] = useState(null);
-  const [activityData, setActivityData] = useState([]);
-  const [quizData, setQuizData] = useState([]);
-  const [error, setError] = useState("");
+  const { user } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    const fetchProgress = async () => {
-      try {
-        const { data } = await api.get("/progress/me");
-        const progress = data.progress;
+  const completedLessons = user?.completedLessons || [];
+  const quizScores = user?.quizScores || [];
+  const totalXP = user?.totalXP || 0;
 
-        const lessonHistory = progress.lessons
-          .filter(l => l.completed)
-          .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  // Level Progress
+  const nextLevelXP = 100;
+  const currentLevel = Math.floor(totalXP / nextLevelXP) + 1;
+  const xpForCurrentLevel = totalXP % nextLevelXP;
+  const xpProgressPercent = Math.floor((xpForCurrentLevel / nextLevelXP) * 100);
 
-        let streak = 0;
-        for (let i = lessonHistory.length - 1; i >= 0; i--) {
-          const day = new Date(lessonHistory[i].createdAt).toDateString();
-          const prevDay = streak > 0 ? new Date(lessonHistory[i + 1]?.createdAt).toDateString() : null;
-          if (!prevDay || day === prevDay) streak++;
-          else break;
-        }
+  // Lessons completed
+  const lessonsCompleted = completedLessons.length;
 
-        const dailyPointsHistory = lessonHistory.map(h => ({
-          date: h.createdAt,
-          lessons: 1,
-          points: 5
-        }));
+  // Quiz performance
+  const totalQuizzes = quizScores.length;
+  const averageQuizScore = totalQuizzes > 0 
+    ? Math.round(quizScores.reduce((sum, score) => sum + score, 0) / totalQuizzes)
+    : 0;
 
-        const totalPoints = progress.points || dailyPointsHistory.reduce((acc, d) => acc + d.points, 0);
-        const totalLevelsCompleted = Math.floor(totalPoints / 100);
+  // Daily streak (combines lessons and quizzes)
+  let streak = 0;
+  const allActivities = [
+    ...completedLessons.map(l => ({ date: l.completedAt, type: 'lesson' })),
+    ...quizScores.map(q => ({ date: q.completedAt, type: 'quiz' }))
+  ].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-        setStats({
-          totalPoints,
-          totalLevelsCompleted,
-          dailyTime: progress.lessons.reduce((acc, l) => acc + (l.timeSpent || 0), 0) / 60,
-          streak,
-          lessonsCompleted: progress.lessons.filter(l => l.completed).length,
-          quizzesCompleted: progress.quizzes.filter(q => q.completed).length,
-          quizHistory: progress.quizzes || [],
-          dailyPointsHistory,
-          achievements: progress.achievements || [],
-          strugglingTopics: progress.strugglingTopics || []
-        });
-
-        setActivityData(
-          lessonHistory.map(h => ({
-            day: new Date(h.createdAt).toLocaleDateString("en-US", { weekday: "short" }),
-            time: h.timeSpent || 0,
-          }))
-        );
-
-        setQuizData(
-          (progress.quizzes || []).map(q => ({
-            quiz: q.quiz.name || "Quiz",
-            score: q.score || 0,
-          }))
-        );
-
-      } catch (err) {
-        console.error("Error fetching progress:", err);
-        setError(err.message || "Failed to fetch progress");
+  if (allActivities.length > 0) {
+    const today = new Date();
+    let currentStreak = 0;
+    
+    for (let i = 0; i < allActivities.length; i++) {
+      const activityDate = new Date(allActivities[i].date);
+      const diffDays = Math.floor((today - activityDate) / (1000 * 60 * 60 * 24));
+      
+      if (i === 0 && diffDays <= 1) {
+        currentStreak = 1;
+      } else if (diffDays === currentStreak) {
+        currentStreak++;
+      } else {
+        break;
       }
-    };
+    }
+    streak = currentStreak;
+  }
 
-    fetchProgress();
-  }, []);
-
-  if (error) return <div className="dashboard-wrapper"><p className="error">{error}</p></div>;
-  if (!stats) return <div className="dashboard-wrapper"><p>Loading...</p></div>;
+  // Achievements based on both lessons and quizzes
+  const achievements = [];
+  if (lessonsCompleted >= 1) achievements.push({ name: "Getting Started", icon: "🚀", color: "#4CAF50" });
+  if (lessonsCompleted >= 3) achievements.push({ name: "Quick Learner", icon: "📚", color: "#2196F3" });
+  if (totalQuizzes >= 2) achievements.push({ name: "Quiz Explorer", icon: "🎯", color: "#FF9800" });
+  if (averageQuizScore >= 70) achievements.push({ name: "Good Scorer", icon: "⭐", color: "#FFD700" });
+  if (streak >= 3) achievements.push({ name: "Consistent", icon: "🔥", color: "#FF5722" });
 
   return (
-    <div className="dashboard-wrapper">
-      <div className="dashboard-content">
-        
-        {/* 🔥 Streak Section */}
-        <div className="streak-section">
-          <div className="streak-icon">🔥</div>
-          <h2 className="streak-title">Day Streak</h2>
-          <p className="streak-subtext">Practice each day so your streak won't reset!</p>
-          <div className="streak-days">
-            {["Mo","Tu","We","Th","Fr","Sa","Su"].map((day, idx) => (
-              <div key={idx} className={`day-circle ${idx < stats.streak ? "active" : ""}`}>
-                {day}
-              </div>
-            ))}
-          </div>
-        </div>
+    <div className="progress-dashboard">
+      {/* Header Section */}
+      <div className="dashboard-header">
+        <h1>Learning Progress</h1>
+        <p>Track your courses and quiz performance</p>
+      </div>
 
-        {/* 📊 Lesson Progress */}
-        <div className="lesson-progress">
-          <div className="lesson-header">
-            <h3>Well done! 🎉</h3>
-            <p>You completed {stats.lessonsCompleted} lessons</p>
+      <div className="dashboard-content">
+        {/* Top Stats Row */}
+        <div className="stats-row">
+          <div className="main-stat-card level-card">
+            <div className="level-content">
+              <div className="level-badge">
+                <FaChartLine className="level-icon" />
+                <span>Level {currentLevel}</span>
+              </div>
+              <div className="level-progress">
+                <div className="level-bar">
+                  <div
+                    className="level-fill"
+                    style={{ width: `${xpProgressPercent}%` }}
+                  ></div>
+                </div>
+                <p>{xpForCurrentLevel} / {nextLevelXP} XP</p>
+              </div>
+            </div>
           </div>
-          <div className="progress-track">
-            <span style={{fontSize: '11px'}}>{Math.floor((stats.lessonsCompleted / (stats.lessonsCompleted + 10)) * 100)}%</span>
-            <div className="progress-bar">
-              <div className="progress-fill" style={{ width: `${Math.floor((stats.lessonsCompleted / (stats.lessonsCompleted + 10)) * 100)}%` }}></div>
+
+          <div className="main-stat-card streak-card">
+            <div className="streak-content">
+              <FaFire className="streak-icon" />
+              <div className="streak-info">
+                <h3>{streak}</h3>
+                <p>Day Streak</p>
+              </div>
+            </div>
+            <div className="streak-calendar">
+              {[1, 2, 3, 4, 5, 6, 7].map(day => (
+                <div
+                  key={day}
+                  className={`streak-day ${day <= streak ? 'active' : ''}`}
+                >
+                  <span>{['S', 'M', 'T', 'W', 'T', 'F', 'S'][day-1]}</span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="stats-grid">
-          <div className="stat-card"><FaCoins className="stat-icon gold" /><h3>{stats.totalPoints}</h3><p>Points</p></div>
-          <div className="stat-card"><FaChartLine className="stat-icon green" /><h3>{stats.totalLevelsCompleted}</h3><p>Levels</p></div>
-          <div className="stat-card"><FaClock className="stat-icon blue" /><h3>{Math.floor(stats.dailyTime)} min</h3><p>Learning Time</p></div>
-          <div className="stat-card"><FaFire className="stat-icon red" /><h3>{stats.streak}</h3><p>Streak</p></div>
-        </div>
-
-        {/* Charts - Made much smaller */}
-        <div className="charts-grid">
-          <div className="chart-card">
-            <h4>Weekly Activity</h4>
-            <ResponsiveContainer width="100%" height={80}>
-              <LineChart data={activityData}>
-                <XAxis dataKey="day" fontSize={10} />
-                <YAxis fontSize={10} />
-                <Tooltip />
-                <Line type="monotone" dataKey="time" stroke="#8884d8" strokeWidth={2} />
-              </LineChart>
-            </ResponsiveContainer>
+        {/* Performance Metrics */}
+        <div className="metrics-grid">
+          <div className="metric-card">
+            <div className="metric-icon lessons">
+              <FaBook />
+            </div>
+            <div className="metric-info">
+              <h3>{lessonsCompleted}</h3>
+              <p>Lessons</p>
+            </div>
           </div>
 
-          <div className="chart-card">
-            <h4>Quiz Performance</h4>
-            <ResponsiveContainer width="100%" height={80}>
-              <BarChart data={quizData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="quiz" fontSize={10} />
-                <YAxis fontSize={10} />
-                <Tooltip />
-                <Bar dataKey="score" fill="#82ca9d" />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="metric-card">
+            <div className="metric-icon quizzes">
+              <FaGamepad />
+            </div>
+            <div className="metric-info">
+              <h3>{totalQuizzes}</h3>
+              <p>Quizzes</p>
+            </div>
           </div>
-        </div>
 
-        {/* Achievements */}
-        <div className="achievements">
-          <h4>🏆 Achievements</h4>
-          <div className="achievement-cards">
-            {stats.achievements.length > 0 ? stats.achievements.map((ach, idx) => (
-              <div key={idx} className="achievement-card">{ach.name}</div>
-            )) : <p className="text-muted">No achievements yet</p>}
+          <div className="metric-card">
+            <div className="metric-icon xp">
+              <FaCoins />
+            </div>
+            <div className="metric-info">
+              <h3>{totalXP}</h3>
+              <p>Total XP</p>
+            </div>
+          </div>
+
+          <div className="metric-card">
+            <div className="metric-icon score">
+              <FaTrophy />
+            </div>
+            <div className="metric-info">
+              <h3>{averageQuizScore}%</h3>
+              <p>Avg Score</p>
+            </div>
           </div>
         </div>
 
-        {/* Struggling Topics */}
-        <div className="struggling-topics">
-          <h4>⚠️ Struggling Topics</h4>
-          {stats.strugglingTopics.length > 0 ? (
-            <ul>
-              {stats.strugglingTopics.map((topic, idx) => (
-                <li key={idx}>{topic.topic} ({topic.attempts} attempts)</li>
-              ))}
-            </ul>
-          ) : <p className="text-muted">No struggling topics</p>}
-        </div>
+        {/* Charts and Achievements Row */}
+        <div className="content-row">
+          {/* Progress Chart */}
+          <div className="chart-section">
+            <div className="section-header">
+              <h3>Weekly Progress</h3>
+            </div>
+            <div className="chart-container">
+              <ProgressChart completedLessons={completedLessons} quizScores={quizScores} />
+            </div>
+          </div>
 
+          {/* Achievements */}
+          <div className="achievements-section">
+            <div className="section-header">
+              <h3>Achievements</h3>
+              <span>{achievements.length}/5</span>
+            </div>
+            <div className="achievements-grid">
+              {achievements.length > 0 ? (
+                achievements.map((achievement, index) => (
+                  <div key={index} className="achievement-card" style={{ borderLeftColor: achievement.color }}>
+                    <div className="achievement-icon" style={{ color: achievement.color }}>
+                      {achievement.icon}
+                    </div>
+                    <div className="achievement-info">
+                      <h4>{achievement.name}</h4>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="no-achievements">
+                  <FaTrophy className="no-achievements-icon" />
+                  <p>Start learning to earn achievements!</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

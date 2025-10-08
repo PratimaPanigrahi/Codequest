@@ -1,0 +1,38 @@
+.admin-container {
+  padding: 2rem;
+  background: #f7f8fa;
+  min-height: 100vh;
+}
+
+h2 {
+  margin-bottom: 1rem;
+  color: #222;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  text-align: left;
+}
+
+.delete-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #b52a37;
+}

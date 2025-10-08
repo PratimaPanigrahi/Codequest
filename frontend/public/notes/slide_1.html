@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Programming - Lesson 1: Introduction</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #306998;
+            --secondary: #FFD43B;
+            --accent: #4B8BBE;
+            --light: #f5f5f5;
+            --dark: #333;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: var(--dark);
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .slide-container {
+            width: 90vw;
+            height: 85vh;
+            max-width: 1100px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .slide {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: white;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+            overflow: hidden;
+        }
+        
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            animation: slideIn 0.5s ease forwards;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .slide-header {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+            flex-shrink: 0;
+            padding: 0 10px;
+            position: relative;
+        }
+        
+        .slide-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .slide-subtitle {
+            font-size: 1.1rem;
+            color: var(--accent);
+            font-weight: 400;
+        }
+        
+        .slide-content {
+            width: 100%;
+            height: calc(100% - 140px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 0 10px;
+            overflow: hidden;
+        }
+        
+        .content-wrapper {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        .content-row {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            align-items: flex-start;
+            justify-content: center;
+            min-height: 0;
+            height: 100%;
+        }
+        
+        .text-content {
+            flex: 1;
+            max-width: 500px;
+            min-height: 0;
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .visual-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 400px;
+            min-height: 0;
+            height: 100%;
+        }
+        
+        .icon-large {
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.8;
+        }
+        
+        .section {
+            background: var(--light);
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            width: 100%;
+            min-height: 0;
+            overflow: hidden;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-content {
+            line-height: 1.5;
+            font-size: 1rem;
+            min-height: 0;
+            overflow: hidden;
+            flex: 1;
+        }
+        
+        .section-content ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+        
+        .section-content li {
+            margin-bottom: 8px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .feature-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 4px solid var(--accent);
+            transition: transform 0.3s;
+        }
+        
+        .feature-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .feature-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        .feature-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: var(--dark);
+            font-size: 1rem;
+        }
+        
+        .applications-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .application-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            transition: transform 0.3s;
+        }
+        
+        .application-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 5px 0;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            width: 100%;
+            max-width: 400px;
+            overflow: hidden;
+        }
+        
+        .code-keyword {
+            color: #f92672;
+        }
+        
+        .code-function {
+            color: #66d9ef;
+        }
+        
+        .code-string {
+            color: #a6e22e;
+        }
+        
+        .code-comment {
+            color: #75715e;
+        }
+        
+        .nav-buttons {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding-left: 20px;
+            padding-right: 60px;
+            flex-shrink: 0;
+        }
+        
+        .nav-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.1);
+        }
+        
+        .nav-btn:hover:not(:disabled) {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .slide-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--primary);
+            font-weight: bold;
+            background: rgba(255,255,255,0.8);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .python-logo {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        
+        .history-timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            position: relative;
+            width: 100%;
+        }
+        
+        .history-timeline::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+        }
+        
+        .timeline-item {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            flex: 1;
+        }
+        
+        .timeline-year {
+            background: var(--primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+        
+        .reflection-box {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 15px;
+            width: 100%;
+        }
+        
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            gap: 20px;
+            width: 100%;
+        }
+        
+        .quiz-icon {
+            font-size: 4rem;
+            color: var(--primary);
+        }
+        
+        .quiz-title {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+        
+        .quiz-description {
+            font-size: 1.1rem;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+        
+        .quiz-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .quiz-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .fun-fact {
+            background: linear-gradient(135deg, var(--secondary) 0%, #FFE873 100%);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+            border-left: 4px solid var(--primary);
+            font-size: 0.9rem;
+        }
+        
+        .python-mascot {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px;
+            background: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--primary);
+        }
+        
+        .interactive-element {
+            background: var(--light);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .interactive-element:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .quote-box {
+            background: linear-gradient(135deg, var(--accent) 0%, #6BA3D6 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            font-style: italic;
+            position: relative;
+            font-size: 0.9rem;
+        }
+        
+        .quote-box::before {
+            content: '"';
+            font-size: 3rem;
+            position: absolute;
+            top: -5px;
+            left: 8px;
+            opacity: 0.3;
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>       
+<div class="timer-container" id="slideTimerDisplay">
+            <i class="fas fa-clock"></i>
+            <span id="timer">01:00</span>
+        </div>
+        <!-- Slide 1: What is Python? -->
+        <div class="slide active" id="slide1">
+            <div class="slide-header">
+                
+                <div class="python-mascot">
+                    <i class="fab fa-python"></i>
+                </div>
+                <h1 class="slide-title">What is Python?</h1>
+                <p class="slide-subtitle">A high-level, interpreted programming language</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Python is a powerful, versatile programming language known for its simple syntax and readability. It emphasizes code readability with its clean, English-like syntax.</p>
+                                    <p>Python supports multiple programming paradigms, including procedural, object-oriented, and functional programming.</p>
+                                    <ul>
+                                        <li><strong>High-level</strong> - Easy for humans to read and write</li>
+                                        <li><strong>Interpreted</strong> - Code is executed line by line</li>
+                                        <li><strong>Dynamically typed</strong> - No need to declare variable types</li>
+                                        <li><strong>Open source</strong> - Free to use and modify</li>
+                                    </ul>
+                                    
+                                    <div class="fun-fact">
+                                        <strong>Fun Fact:</strong> Python was named after Monty Python, not the snake!
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Simple Python code example</span><br>
+                                <span class="code-keyword">def</span> <span class="code-function">greet</span>(name):<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span class="code-keyword">return</span> <span class="code-string">f"Hello, {name}!"</span><br><br>
+                                
+                                <span class="code-comment"># Using the function</span><br>
+                                message = greet(<span class="code-string">"Python Learner"</span>)<br>
+                                print(message)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn1">Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 1 of 10</div>
+        </div>
+
+        <!-- Slide 2: Creator & History -->
+        <div class="slide" id="slide2">
+            <div class="slide-header">
+                <h1 class="slide-title">Creator & History</h1>
+                <p class="slide-subtitle">The story behind Python's creation</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Python was created by <strong>Guido van Rossum</strong> in the late 1980s. He started implementing Python in December 1989.</p>
+                                    <p>Van Rossum named the language after the British comedy group Monty Python, not the snake. He wanted a name that was short, unique, and slightly mysterious.</p>
+                                    
+                                    <div class="quote-box">
+                                        "Python is an experiment in how much freedom programmers need. Too much freedom and nobody can read another's code; too little and expressiveness is endangered."
+                                        <div style="margin-top: 8px; font-weight: bold;">- Guido van Rossum</div>
+                                    </div>
+                                    
+                                    <div class="history-timeline">
+                                        <div class="timeline-item">
+                                            <div class="timeline-year">1989</div>
+                                            <div>Python conception</div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-year">1991</div>
+                                            <div>First public release</div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-year">2000</div>
+                                            <div>Python 2.0 released</div>
+                                        </div>
+                                        <div class="timeline-item">
+                                            <div class="timeline-year">2008</div>
+                                            <div>Python 3.0 released</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div style="display: flex; flex-direction: column; align-items: center; height: 100%;">
+                                <div class="python-mascot">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <div class="fun-fact" style="margin-top: 15px;">
+                                    <strong>Did you know?</strong> Guido van Rossum was given the title "Benevolent Dictator For Life" for his ongoing role in Python's development.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn2">Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 2 of 10</div>
+        </div>
+
+        <!-- Slide 3: Why Python? -->
+        <div class="slide" id="slide3">
+            <div class="slide-header">
+                <h1 class="slide-title">Why Python?</h1>
+                <p class="slide-subtitle">Reasons for Python's popularity</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="section">
+                        <div class="section-content">
+                            <p>Python has become one of the most popular programming languages for several key reasons:</p>
+                            
+                            <div class="feature-grid">
+                                <div class="feature-item">
+                                    <div class="feature-icon"><i class="fas fa-graduation-cap"></i></div>
+                                    <div class="feature-title">Easy to Learn</div>
+                                    <p>Simple syntax similar to English makes it beginner-friendly</p>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon"><i class="fas fa-cogs"></i></div>
+                                    <div class="feature-title">Versatile</div>
+                                    <p>Used in web development, data science, AI, and more</p>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon"><i class="fas fa-users"></i></div>
+                                    <div class="feature-title">Large Community</div>
+                                    <p>Vast ecosystem of libraries and frameworks</p>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon"><i class="fas fa-industry"></i></div>
+                                    <div class="feature-title">Industry Demand</div>
+                                    <p>High demand for Python developers across industries</p>
+                                </div>
+                            </div>
+                            
+                            <div class="fun-fact">
+                                <strong>Python in Numbers:</strong> Python is consistently ranked among the top 3 most popular programming languages worldwide.
+                            </div>
+                            
+                            <div class="interactive-element" onclick="alert('Python is used by companies like Google, Netflix, Instagram, and NASA!')">
+                                <i class="fas fa-lightbulb"></i> Click to see which companies use Python
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn3">Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 3 of 10</div>
+        </div>
+
+        <!-- Slide 4: Features of Python -->
+        <div class="slide" id="slide4">
+            <div class="slide-header">
+                <h1 class="slide-title">Features of Python</h1>
+                <p class="slide-subtitle">What makes Python unique</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="section">
+                        <div class="section-content">
+                            <p>Python includes several distinctive features that contribute to its popularity:</p>
+                            
+                            <div class="feature-grid">
+                                <div class="feature-item">
+                                    <div class="feature-icon"><i class="fas fa-book-open"></i></div>
+                                    <div class="feature-title">Readable</div>
+                                    <p>Clean syntax with emphasis on readability</p>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon"><i class="fas fa-plug"></i></div>
+                                    <div class="feature-title">Extensible</div>
+                                    <p>Can be extended with C/C++ for performance</p>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon"><i class="fas fa-box-open"></i></div>
+                                    <div class="feature-title">Batteries Included</div>
+                                    <p>Rich standard library for various tasks</p>
+                                </div>
+                                <div class="feature-item">
+                                    <div class="feature-icon"><i class="fas fa-laptop-code"></i></div>
+                                    <div class="feature-title">Cross-platform</div>
+                                    <p>Runs on Windows, macOS, Linux, and more</p>
+                                </div>
+                            </div>
+                            
+                            <div class="fun-fact">
+                                <strong>Python Zen:</strong> "Readability counts" is one of the guiding principles of Python (from "The Zen of Python").
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn4">Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 4 of 10</div>
+        </div>
+
+        <!-- Slide 5: Advantages of Python -->
+        <div class="slide" id="slide5">
+            <div class="slide-header">
+                <h1 class="slide-title">Advantages of Python</h1>
+                <p class="slide-subtitle">Benefits of using Python</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Python offers numerous advantages that make it an excellent choice for both beginners and experienced developers:</p>
+                                    <ul>
+                                        <li><strong>Rapid Development</strong> - Write programs with fewer lines of code</li>
+                                        <li><strong>Large Standard Library</strong> - Pre-built modules for various tasks</li>
+                                        <li><strong>Community Support</strong> - Active community providing help and resources</li>
+                                        <li><strong>Integration Capability</strong> - Works well with other languages and tools</li>
+                                        <li><strong>Open Source</strong> - Free to use, modify, and distribute</li>
+                                        <li><strong>Portable</strong> - Code written on one platform runs on others</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <i class="fas fa-thumbs-up icon-large"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn5">Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 5 of 10</div>
+        </div>
+
+        <!-- Slide 6: Applications -->
+        <div class="slide" id="slide6">
+            <div class="slide-header">
+                <h1 class="slide-title">Applications of Python</h1>
+                <p class="slide-subtitle">Where Python is used in the real world</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="section">
+                        <div class="section-content">
+                            <p>Python's versatility allows it to be used in various domains:</p>
+                            
+                            <div class="applications-grid">
+                                <div class="application-item">
+                                    <div class="feature-icon"><i class="fas fa-globe"></i></div>
+                                    <div class="feature-title">Web Development</div>
+                                    <p>Django, Flask frameworks</p>
+                                </div>
+                                <div class="application-item">
+                                    <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
+                                    <div class="feature-title">Data Science</div>
+                                    <p>Pandas, NumPy, Matplotlib</p>
+                                </div>
+                                <div class="application-item">
+                                    <div class="feature-icon"><i class="fas fa-robot"></i></div>
+                                    <div class="feature-title">AI & Machine Learning</div>
+                                    <p>TensorFlow, PyTorch, Scikit-learn</p>
+                                </div>
+                                <div class="application-item">
+                                    <div class="feature-icon"><i class="fas fa-gamepad"></i></div>
+                                    <div class="feature-title">Game Development</div>
+                                    <p>Pygame library</p>
+                                </div>
+                                <div class="application-item">
+                                    <div class="feature-icon"><i class="fas fa-tools"></i></div>
+                                    <div class="feature-title">Automation</div>
+                                    <p>Scripting and task automation</p>
+                                </div>
+                                <div class="application-item">
+                                    <div class="feature-icon"><i class="fas fa-microscope"></i></div>
+                                    <div class="feature-title">Scientific Computing</div>
+                                    <p>Research and simulations</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn6">Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 6 of 10</div>
+        </div>
+
+        <!-- Slide 7: Python Syntax Overview -->
+        <div class="slide" id="slide7">
+            <div class="slide-header">
+                <h1 class="slide-title">Python Syntax Overview</h1>
+                <p class="slide-subtitle">Understanding Python code structure</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Python syntax is designed to be readable and straightforward. Key characteristics include:</p>
+                                    <ul>
+                                        <li><strong>Indentation</strong> - Uses whitespace to define code blocks (no curly braces)</li>
+                                        <li><strong>Simple statements</strong> - One statement per line (generally)</li>
+                                        <li><strong>Dynamic typing</strong> - No need to declare variable types</li>
+                                        <li><strong>Clear naming</strong> - Descriptive function and variable names</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Simple Python example</span><br>
+                                name = <span class="code-string">"Alice"</span><br>
+                                age = 30<br><br>
+                                
+                                <span class="code-keyword">if</span> age >= 18:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Hello {name}, you are an adult"</span>)<br>
+                                <span class="code-keyword">else</span>:<br>
+                                &nbsp;&nbsp;&nbsp;&nbsp;print(<span class="code-string">f"Hello {name}, you are a minor"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn7">Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 7 of 10</div>
+        </div>
+
+        <!-- Slide 8: Comments in Python -->
+        <div class="slide" id="slide8">
+            <div class="slide-header">
+                <h1 class="slide-title">Comments in Python</h1>
+                <p class="slide-subtitle">Adding explanations to your code</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>Comments are essential for explaining code and making it more readable. Python supports two types of comments:</p>
+                                    <ul>
+                                        <li><strong>Single-line comments</strong> - Start with # and continue to the end of the line</li>
+                                        <li><strong>Multi-line comments</strong> - Using triple quotes (''' or """) for documentation</li>
+                                    </ul>
+                                    <p>Good comments help you and others understand the purpose of your code.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># This is a single-line comment</span><br>
+                                name = <span class="code-string">"Bob"</span>  <span class="code-comment"># This comment is after code</span><br><br>
+                                
+                                <span class="code-comment">'''<br>
+                                This is a multi-line comment<br>
+                                It can span several lines<br>
+                                Often used for documentation<br>
+                                '''</span><br><br>
+                                
+                                <span class="code-comment"># Calculate area of a circle</span><br>
+                                radius = 5<br>
+                                area = 3.14159 * radius ** 2<br>
+                                print(<span class="code-string">f"Area: {area}"</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn8">Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 8 of 10</div>
+        </div>
+
+          <!-- Slide 9: Print Function -->
+        <div class="slide" id="slide9">
+            <div class="slide-header">
+                <h1 class="slide-title">Print Function</h1>
+                <p class="slide-subtitle">Displaying output in Python</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="content-row">
+                        <div class="text-content">
+                            <div class="section">
+                                <div class="section-content">
+                                    <p>The <code>print()</code> function is used to display output to the console. It's one of the most commonly used functions in Python.</p>
+                                    <p>Key features of the print function:</p>
+                                    <ul>
+                                        <li>Can print strings, numbers, variables, and expressions</li>
+                                        <li>Accepts multiple arguments separated by commas</li>
+                                        <li>Automatically adds a space between arguments</li>
+                                        <li>Includes optional parameters like <code>sep</code> and <code>end</code></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="visual-content">
+                            <div class="code-block">
+                                <span class="code-comment"># Basic print examples</span><br>
+                                print(<span class="code-string">"Hello, World!"</span>)<br>
+                                print(42)<br>
+                                print(<span class="code-string">"Python"</span>, <span class="code-string">"is"</span>, <span class="code-string">"awesome"</span>)<br><br>
+                                
+                                <span class="code-comment"># Printing variables</span><br>
+                                name = <span class="code-string">"Alice"</span><br>
+                                age = 25<br>
+                                print(<span class="code-string">"Name:"</span>, name, <span class="code-string">"Age:"</span>, age)<br><br>
+                                
+                                <span class="code-comment"># Using f-strings (formatted strings)</span><br>
+                                print(<span class="code-string">f"Hello, {name}! You are {age} years old."</span>)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn next-btn" id="nextBtn9">Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 9 of 10</div>
+        </div>
+        <!-- Slide 10: Quiz -->
+        <div class="slide" id="slide10">
+            <div class="slide-header">
+                <h1 class="slide-title">Quiz Time!</h1>
+                <p class="slide-subtitle">Test your Python knowledge</p>
+            </div>
+            <div class="slide-content">
+                <div class="content-wrapper">
+                    <div class="quiz-container">
+                        <div class="python-mascot">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <h2 class="quiz-title">Ready for the Quiz?</h2>
+                        <p class="quiz-description">You've completed the introduction to Python. Now test your knowledge with a short quiz to see how much you've learned!</p>
+                        
+                        <div class="fun-fact">
+                            <strong>Tip:</strong> Review the previous slides if you need a refresher before starting the quiz.
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn prev-btn"><i class="fas fa-arrow-left"></i> Previous</button>
+                <button class="nav-btn" disabled>Next <i class="fas fa-arrow-right"></i></button>
+            </div>
+            <div class="slide-counter">Slide 10 of 10</div>
+        </div>
+    </div>
+    
+    
+</div>
+<script>
+    let currentSlide = 1;
+    const totalSlides = 10;
+    const progressBar = document.getElementById('progressBar');
+
+    let slideTimers = Array(totalSlides).fill(60);
+    let slideTimerIntervals = [];
+
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60).toString().padStart(2,'0');
+        const s = (seconds % 60).toString().padStart(2,'0');
+        return `${m}:${s}`;
+    }
+
+    function startSlideTimer(slideIndex) {
+    const slideNumber = slideIndex + 1; // convert back to human numbering
+    const timerDisplay = document.getElementById("slideTimerDisplay");
+    const nextButton = document.getElementById(`nextBtn${slideNumber}`);
+
+        if (slideTimers[slideNumber] <= 0) {
+            if (nextButton) nextButton.disabled = false;
+            timerDisplay.textContent = "Next unlocked ✅";
+            return;
+        }
+
+        if (slideTimerIntervals[slideNumber]) {
+            clearInterval(slideTimerIntervals[slideNumber]);
+        }
+
+        let time = slideTimers[slideNumber];
+        if (nextButton) nextButton.disabled = true;
+
+        timerDisplay.textContent = "Timer: " + formatTime(time);
+
+        slideTimerIntervals[slideNumber] = setInterval(() => {
+            time--;
+            slideTimers[slideNumber] = time;
+
+            if (time > 0) {
+                timerDisplay.textContent = "Timer: " + formatTime(time);
+            } else {
+                clearInterval(slideTimerIntervals[slideNumber]);
+                if (nextButton) nextButton.disabled = false;
+                timerDisplay.textContent = "Next unlocked ✅";
+            }
+        }, 1000);
+    }
+
+    function updateProgressBar() {
+        const progress = (currentSlide / totalSlides) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
+
+    function showSlide(slideNumber) {
+        document.querySelectorAll('.slide').forEach(slide => {
+            slide.classList.remove('active');
+        });
+
+        document.getElementById(`slide${slideNumber}`).classList.add('active');
+        currentSlide = slideNumber;
+        updateProgressBar();
+        startSlideTimer(slideNumber - 1);
+    }
+
+    document.querySelectorAll('.next-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            if (currentSlide < totalSlides) {
+                showSlide(currentSlide + 1);
+            }
+        });
+    });
+
+    document.querySelectorAll('.prev-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            if (currentSlide > 1) {
+                showSlide(currentSlide - 1);
+            }
+        });
+    });
+
+    showSlide(1);
+    updateProgressBar();
+    // When user reaches final slide
+function notifySlideChange(slideNumber) {
+  window.parent.postMessage({ type: "SLIDE_CHANGED", slideNumber }, "*");
+}
+
+// Example: call this inside showSlide()
+function showSlide(slideNumber) {
+  document.querySelectorAll('.slide').forEach(slide => {
+    slide.classList.remove('active');
+  });
+  document.getElementById(`slide${slideNumber}`).classList.add('active');
+  currentSlide = slideNumber;
+  updateProgressBar();
+  startSlideTimer(slideNumber - 1);
+
+  // 🔔 Notify parent React app
+  notifySlideChange(slideNumber);
+}
+
+// When quiz is attempted
+document.getElementById("attemptQuizBtn")?.addEventListener("click", () => {
+  window.parent.postMessage({ type: "QUIZ_COMPLETED" }, "*");
+});
+
+</script>
+
+</body>
+</html>

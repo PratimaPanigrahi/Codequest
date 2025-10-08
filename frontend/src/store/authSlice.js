@@ -13,7 +13,7 @@ export const registerUser = createAsyncThunk(
 
       setToken(token);
 
-      const user = { name, email, role, selectedCourses: [] };
+      const user = { name, email, role, completedLessons: [], totalXP: 0 };
       localStorage.setItem("user", JSON.stringify(user));
 
       return { token, user };
@@ -29,11 +29,15 @@ export const loginUser = createAsyncThunk(
   async (credentials, { rejectWithValue }) => {
     try {
       const response = await api.post("/auth/login", credentials);
-      const { token, name, email, role, selectedCourses } = response.data;
+      const { token, name, email, role, completedLessons } = response.data;
 
       setToken(token);
 
-      const user = { name, email, role, selectedCourses: selectedCourses || [] };
+      const user = { 
+        name, email, role, 
+        completedLessons: completedLessons || [], 
+        totalXP: completedLessons?.reduce((a,b)=>a+b.xp,0) || 0
+      };
       localStorage.setItem("user", JSON.stringify(user));
 
       return { token, user };
@@ -64,22 +68,19 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    // Add a course to user's enrolled courses
-    updateUserCourse: (state, action) => {
+    // Mark lesson as completed and add XP
+    completeLesson: (state, action) => {
       if (!state.user) return;
 
-      const { course, date } = action.payload;
+      const { lessonId, xp, level } = action.payload;
 
-      // Initialize array if it doesn't exist
-      if (!state.user.selectedCourses) state.user.selectedCourses = [];
-
-      // Prevent duplicate enrollment
-      const exists = state.user.selectedCourses.find((c) => c.course === course);
+      // Prevent duplicates
+      const exists = state.user.completedLessons.find(l => l.lessonId === lessonId);
       if (!exists) {
-        state.user.selectedCourses.push({ course, date });
+        state.user.completedLessons.push({ lessonId, xp, level });
+        state.user.totalXP += xp;
       }
 
-      // Update localStorage
       localStorage.setItem("user", JSON.stringify(state.user));
     },
   },
@@ -130,5 +131,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { updateUserCourse } = authSlice.actions;
+export const { completeLesson } = authSlice.actions;
 export default authSlice.reducer;
